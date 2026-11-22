@@ -1,0 +1,46 @@
+{
+  "name": "carlink-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "generate:api": "openapi-typescript ../contracts/openapi.json -o src/api/generated.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build && node scripts/build-notices.mjs && node ../scripts/prepare-frontend-static.mjs dist",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "coverage": "node scripts/coverage.mjs",
+    "deploy:config": "node scripts/host-config.mjs",
+    "package:static": "node scripts/package-static.mjs",
+    "format": "prettier --write src tests scripts deploy docs *.ts index.html package.json README.md",
+    "format:check": "prettier --check src tests scripts deploy docs *.ts index.html package.json README.md"
+  },
+  "dependencies": {
+    "@ant-design/icons": "6.3.4",
+    "@tanstack/react-query": "5.108.0",
+    "antd": "6.7.1",
+    "dayjs": "1.11.13",
+    "leaflet": "^1.9.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "openapi-typescript": "7.13.0",
+    "prettier": "3.10.1",
+    "typescript": "5.9.3",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  }
+}

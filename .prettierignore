@@ -1,0 +1,13 @@
+src/api/generated.ts
+docs/OPERATION_COVERAGE.md
+docs/operation-coverage.json
+deploy/apache.htaccess
+deploy/nginx.conf.example
+node_modules/
+dist/
+release/
+releases/
+**/.DS_Store
+__MACOSX/
+**/__MACOSX/
+._*

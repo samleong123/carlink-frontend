@@ -1,0 +1,16 @@
+# Review AllowOverride/module support before installing as .htaccess in the frontend document root.
+# Do not replace an existing site configuration without merging it.
+DirectoryIndex index.html
+Options -Indexes
+<IfModule mod_negotiation.c>
+  Options -MultiViews
+</IfModule>
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; connect-src 'self' https://carlink-be.samsam123.name.my; img-src 'self' data: https://*.s3.ap-southeast-1.amazonaws.com https://s3.ap-southeast-1.amazonaws.com https://*.s3.amazonaws.com https://s3.amazonaws.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), bluetooth=()"
+  Header always set Cache-Control "no-store"
+</IfModule>
+# Directory indexes serve the two packaged confirmation shells. Missing assets stay 404.

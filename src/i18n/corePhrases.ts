@@ -1,0 +1,1517 @@
+import type { Locale } from "./messages";
+
+export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
+  en: {
+    // Core labels & booleans
+    Original: "Original",
+    "Original field": "Original field",
+    original_field: "Original field",
+    "Original value": "Original value",
+    Yes: "Yes",
+    yes: "Yes",
+    No: "No",
+    no: "No",
+    Unknown: "Unknown",
+    unknown: "Unknown",
+    Empty: "Empty",
+    empty: "No records returned",
+    Close: "Close",
+    Actions: "Actions",
+    Updated: "Updated",
+    Account: "Account",
+    Vehicle: "Vehicle",
+    days: "days",
+
+    // Shared navigation / common messages (ensures full 4-locale coverage)
+    signIn: "Sign in to CarLink",
+    email: "Email address",
+    requestLink: "Email me a sign-in link",
+    confirmLogin: "Confirm sign-in",
+    confirmInvitation: "Accept invitation",
+    signOut: "Sign out",
+    refresh: "Refresh",
+    previous: "Previous",
+    next: "Next",
+    search: "Search loaded rows",
+    save: "Review & save",
+    cancel: "Cancel",
+    confirm: "Confirm action",
+    language: "Language",
+    organization: "Organization",
+    workspace: "Workspace",
+    platform: "SaaS administration",
+    technician: "Technician workspace",
+    fleet: "Organization workspace",
+    driver: "Driver portal",
+    loading: "Loading your workspace",
+    account: "My account",
+    loaded: "loaded records",
+    observed: "Observed",
+    status: "Status",
+    pending: "Pending",
+    active: "Active",
+    suspended: "Suspended",
+    inactive: "Inactive",
+    recent_packet: "Recent packet",
+    stale: "Stale observation",
+    never_observed: "Never observed",
+    submitted: "Submitted",
+    approved: "Approved",
+    rejected: "Rejected",
+    paid: "Paid",
+    succeeded: "Succeeded",
+    valid: "Valid",
+    completed: "Completed",
+    failed: "Failed",
+    expired: "Expired",
+    critical: "Critical",
+    due_soon: "Due soon",
+    in_progress: "In progress",
+    registered: "Registered",
+    issued: "Issued",
+    open: "Open",
+    archived: "Archived",
+    superseded: "Superseded",
+    excluded: "Excluded",
+    uncalibrated_not_distance_normalized:
+      "Uncalibrated (not distance-normalized)",
+
+    // App.tsx shell
+    WORKSPACE: "WORKSPACE",
+    "‹ Collapse": "‹ Collapse",
+    "Toggle sidebar": "Toggle sidebar",
+    "Open navigation": "Open navigation",
+    "Open notifications": "Open notifications",
+    "Skip to content": "Skip to content",
+    "No organization selected": "No organization selected",
+    "CarLink home & plans": "CarLink home & plans",
+    "Create organization": "Create organization",
+    "CarLink · Fleet operations": "CarLink | Connected to Every Mile",
+    "CarLink | Connected to Every Mile": "CarLink | Connected to Every Mile",
+    "User Manual": "User Manual",
+    "Terms & Conditions": "Terms & Conditions",
+    "Privacy Policy": "Privacy Policy",
+    "For the best experience, use Google Chrome, Microsoft Edge, or Safari at 1920 × 1080 resolution or higher on Desktop, Laptop, or Tablet.":
+      "For the best experience, use Google Chrome, Microsoft Edge, or Safari at 1920 × 1080 resolution or higher on Desktop, Laptop, or Tablet.",
+    "End this browser session only? Physical NFC shifts and automatic journeys are not ended.":
+      "End this browser session only? Physical NFC shifts and automatic journeys are not ended.",
+    "Workspace unavailable": "Workspace unavailable",
+    "Your current memberships and permissions do not grant this page.":
+      "Your current memberships and permissions do not grant this page.",
+    "Open permitted workspace": "Open permitted workspace",
+    "Paid operational access is inactive":
+      "Paid operational access is inactive",
+    "Renew your subscription or contact an operator about suspension. Permitted billing/account pages remain available.":
+      "Renew your subscription or contact an operator about suspension. Permitted billing/account pages remain available.",
+    "Open billing": "Open billing",
+    "Page unavailable": "Page unavailable",
+
+    // AuthScreen.tsx
+    "FLEET OPERATIONS, CONNECTED": "FLEET OPERATIONS, CONNECTED",
+    "One clear view.": "One clear view.",
+    "A better connected fleet.": "A better connected fleet.",
+    "Bring vehicles, drivers and day-to-day operations together — with the right information in the right hands.":
+      "Bring vehicles, drivers and day-to-day operations together — with the right information in the right hands.",
+    "Permission-aware workspaces": "Permission-aware workspaces",
+    "Vehicles, drivers and compliance in one place":
+      "Vehicles, drivers and compliance in one place",
+    "Secure, single-use email sign-in": "Secure, single-use email sign-in",
+    "Fleet · Drivers · Compliance · Managed devices":
+      "Fleet · Drivers · Compliance · Managed devices",
+    "WELCOME TO CARLINK": "WELCOME TO CARLINK",
+    "Confirm your organization": "Confirm your organization",
+    "Confirm your email to get started": "Confirm your email to get started",
+    "This link is missing or invalid. Request a fresh sign-in link.":
+      "This link is missing or invalid. Request a fresh sign-in link.",
+    "Sign in with the invited mailbox in a separate tab, then return here. The invitation is kept only in this tab's memory.":
+      "Sign in with the invited mailbox in a separate tab, then return here. The invitation is kept only in this tab's memory.",
+    "Check sign-in status": "Check sign-in status",
+    "Signed in as {email}. Accepting grants only the server-authorized invitation role.":
+      "Signed in as {email}. Accepting grants only the server-authorized invitation role.",
+    "Confirm the organization and plan reviewed in your signup email. Your invoice will be issued and secure payment will open in a new window. Unpaid organizations are permanently deleted after 12 hours.":
+      "Confirm the organization and plan reviewed in your signup email. Your invoice will be issued and secure payment will open in a new window. Unpaid organizations are permanently deleted after 12 hours.",
+    "Confirm below to sign in securely. This link works once.":
+      "Confirm below to sign in securely. This link works once.",
+    "Confirm & continue to payment": "Confirm & continue to payment",
+    "Check your email": "Check your email",
+    "If your account is eligible, a link will arrive shortly. It expires after 10 minutes and works once. Check your spam folder if needed.":
+      "If your account is eligible, a link will arrive shortly. It expires after 10 minutes and works once. Check your spam folder if needed.",
+    "Confirming email creates an account identity, not an organization or a charge. You will choose and review your plan next.":
+      "Confirming email creates an account identity, not an organization or a charge. You will choose and review your plan next.",
+    "Sign in securely by email — no password needed.":
+      "Sign in securely by email — no password needed.",
+    "Back to CarLink": "Back to CarLink",
+    "Secure API connection": "Secure API connection",
+
+    // CoordinateMap.tsx
+    "Ant Light": "Ant Light",
+    Standard: "Standard",
+    Slate: "Slate",
+    Fit: "Fit",
+    "Zoom in": "Zoom in",
+    "Zoom out": "Zoom out",
+    "Reset map": "Reset map",
+    "Map theme": "Map theme",
+    "Map pin legend": "Map pin legend",
+    "Interactive OpenStreetMap fleet coordinates":
+      "Interactive OpenStreetMap fleet coordinates",
+    "No observed coordinates in this window":
+      "No observed coordinates in this window",
+    "Freshness unknown": "Freshness unknown",
+    "Telemetry gap ({seconds}s)": "Telemetry gap ({seconds}s)",
+    "Signal: {value} dBm ({band})": "Signal: {value} dBm ({band})",
+    "Signal unknown": "Signal unknown",
+    "Speed: {value} km/h": "Speed: {value} km/h",
+    "Speed unknown": "Speed unknown",
+    "Danger driving event": "Danger driving event",
+    Start: "Start",
+    Latest: "Latest",
+    "Inspect vehicle": "Inspect vehicle",
+    "Accel: {value} m/s²": "Accel: {value} m/s²",
+    " (thresh {value} m/s²)": " (thresh {value} m/s²)",
+    "Detector: {sources}": "Detector: {sources}",
+    Operator: "Operator",
+    RSRP: "RSRP",
+    SINR: "SINR",
+    Coords: "Coords",
+    Observed: "Observed",
+    "Fault code": "Fault code",
+    "Route start": "Route start",
+    "Latest point": "Latest point",
+    Speed: "Speed",
+    "Engine RPM": "Engine RPM",
+    "Driver: {name}": "Driver: {name}",
+    "No active driver": "No active driver",
+    "Current driver": "Current driver",
+    current_driver_name: "Current driver",
+    current_vehicle_registration: "Current vehicle",
+    registration_number: "Registration number",
+    "{plotted} plotted / {loaded} loaded · OpenStreetMap basemap (zoom {zoom}x) · Missing packets are not dead zones.":
+      "{plotted} plotted / {loaded} loaded · OpenStreetMap basemap (zoom {zoom}x) · Missing packets are not dead zones.",
+    "Latitude {minLat}–{maxLat} · Longitude {minLon}–{maxLon}":
+      "Latitude {minLat}–{maxLat} · Longitude {minLon}–{maxLon}",
+    "Unknown signal": "Unknown signal",
+    "Gap (> 120s)": "Gap (> 120s)",
+    "Harsh braking": "Harsh braking",
+    "Harsh acceleration": "Harsh acceleration",
+    "Sharp cornering": "Sharp cornering",
+    "Unknown speed": "Unknown speed",
+    "Recent packet": "Recent packet",
+    "Stale observation": "Stale observation",
+    "Active fault code": "Active fault code",
+    "IMU (5 Hz)": "IMU (5 Hz)",
+    "Server speed Δ": "Server speed Δ",
+    "0–9 km/h (Crawl / Stopped)": "0–9 km/h (Crawl / Stopped)",
+    "10–34 km/h (Slow urban)": "10–34 km/h (Slow urban)",
+    "35–59 km/h (Cruising)": "35–59 km/h (Cruising)",
+    "60–79 km/h (Brisk)": "60–79 km/h (Brisk)",
+    "80–99 km/h (Fast)": "80–99 km/h (Fast)",
+    "100+ km/h (High speed)": "100+ km/h (High speed)",
+    "Excellent (≥ -85 dBm)": "Excellent (≥ -85 dBm)",
+    "Good (-85 to -95 dBm)": "Good (-85 to -95 dBm)",
+    "Fair (-95 to -105 dBm)": "Fair (-95 to -105 dBm)",
+    "Weak (-105 to -115 dBm)": "Weak (-105 to -115 dBm)",
+    "Very weak (< -115 dBm)": "Very weak (< -115 dBm)",
+
+    // shared.tsx
+    "error.0": "Check your connection and the backend CORS configuration.",
+    "error.401": "Your session expired. Sign in using a new email link.",
+    "error.402":
+      "Operational access requires an active paid subscription. Billing and permitted account administration remain available.",
+    "error.403":
+      "This action is restricted by current permissions, purchased features or recent email-link verification. Refresh access or request a new sign-in link.",
+    "error.404":
+      "This record is unavailable or is not accessible in your current workspace.",
+    "error.409":
+      "The record or its version has changed. Refresh current state, then review your proposed changes before submitting again.",
+    "error.410":
+      "The signup or payment deadline has passed. Do not pay an old checkout. Check signup status or contact an operator for late-payment reconciliation.",
+    "error.413":
+      "The upload is too large. Documents: 10 MiB maximum. Photos: 2 MiB maximum.",
+    "error.415":
+      "Only supported JSON requests and JPEG, PNG or PDF attachments are accepted.",
+    "error.419":
+      "CSRF initialization is required. Check HTTPS, the shared XSRF-TOKEN cookie domain and Sanctum origins; then deliberately resubmit.",
+    "error.422":
+      "Review the highlighted fields and the action requirements. Your draft has been preserved.",
+    "error.429":
+      "Too many requests. Wait before trying again; automatic polling has stopped.",
+    "error.502":
+      "The API server or its upstream returned HTTP 502. Use the request reference to investigate that server response.",
+    "error.503":
+      "A backend dependency is unavailable. Contact an operator using the request reference.",
+    "Outcome uncertain — reconcile before retrying":
+      "Outcome uncertain — reconcile before retrying",
+    "API response format mismatch": "API response format mismatch",
+    "Request could not complete ({status})":
+      "Request could not complete ({status})",
+    "API unavailable": "API unavailable",
+    "The operation may have committed even though the response failed. Refresh the affected record before making another submission.":
+      "The operation may have committed even though the response failed. Refresh the affected record before making another submission.",
+    "The server returned HTTP {status}, but this frontend could not read the expected response format. {issue}":
+      "The server returned HTTP {status}, but this frontend could not read the expected response format. {issue}",
+    "The request failed. Refresh the record or contact an operator.":
+      "The request failed. Refresh the record or contact an operator.",
+    "Endpoint: {path}": "Endpoint: {path}",
+    "Request ID: {requestId}": "Request ID: {requestId}",
+    "Retry after {seconds} seconds.": "Retry after {seconds} seconds.",
+    "Refresh state": "Refresh state",
+    "{count} items": "{count} items",
+    "Sort by date": "Sort by date",
+    "Newest first (recent)": "Newest first (recent)",
+    "Oldest first": "Oldest first",
+    "Last successful result — refresh failed":
+      "Last successful result — refresh failed",
+    "Scroll the table horizontally for more columns.":
+      "Scroll the table horizontally for more columns.",
+    "Scroll the table horizontally for more columns and actions.":
+      "Scroll the table horizontally for more columns and actions.",
+    "{count} returned": "{count} returned",
+    "{count} returned on this capped page":
+      "{count} returned on this capped page",
+    "Server-limited list; no full-fleet total is available.":
+      "Server-limited list; no full-fleet total is available.",
+    "Last 1 hour": "Last 1 hour",
+    "Last 6 hours": "Last 6 hours",
+    "Last 24 hours": "Last 24 hours",
+    "Last 7 days": "Last 7 days",
+    "Last 30 days": "Last 30 days",
+    "Choose an increasing range within the allowed window.":
+      "Choose an increasing range within the allowed window.",
+    "24 hours": "24 hours",
+    "{days} days": "{days} days",
+    "Maximum {limit} · Your account timezone":
+      "Maximum {limit} · Your account timezone",
+
+    // workflow.tsx
+    "Current server version. Refresh after every successful change.":
+      "Current server version. Refresh after every successful change.",
+    "Select an authorized record": "Select an authorized record",
+    "Load next page": "Load next page",
+    "Threshold key": "Threshold key",
+    "Unique key": "Unique key",
+    "Threshold severity": "Threshold severity",
+    "Remaining kilometres": "Remaining kilometres",
+    "Remaining km ≤": "Remaining km ≤",
+    "Remaining days": "Remaining days",
+    "Remaining days ≤": "Remaining days ≤",
+    "Threshold matching": "Threshold matching",
+    "Threshold channels": "Threshold channels",
+    "Remove threshold": "Remove threshold",
+    "Add threshold": "Add threshold",
+    "This field is required.": "This field is required.",
+    "Enter the expected format.": "Enter the expected format.",
+    "Explicit acknowledgment is required.":
+      "Explicit acknowledgment is required.",
+    "Use an ISO timestamp with a timezone offset.":
+      "Use an ISO timestamp with a timezone offset.",
+    "Submit this change to the server? Current authorization and business rules will be checked.":
+      "Submit this change to the server? Current authorization and business rules will be checked.",
+    "Review current server state": "Review current server state",
+    "Your proposed fields are preserved. Review this server state before using its current version.":
+      "Your proposed fields are preserved. Review this server state before using its current version.",
+    "Use fetched version with my draft": "Use fetched version with my draft",
+    "Only the unchanged draft can be retried with the same idempotency key. Reconcile before editing or starting a new operation.":
+      "Only the unchanged draft can be retried with the same idempotency key. Reconcile before editing or starting a new operation.",
+    "Reconcile this outcome before closing and starting a replacement operation.":
+      "Reconcile this outcome before closing and starting a replacement operation.",
+    "Accepted/queued is not proof of completion.":
+      "Accepted/queued is not proof of completion.",
+    "Confirm this server action. It cannot be automatically retried.":
+      "Confirm this server action. It cannot be automatically retried.",
+    "Accepted/queued — completion is not yet confirmed.":
+      "Accepted/queued — completion is not yet confirmed.",
+    "channel:info": "Info",
+    "channel:warning": "Warning",
+    "channel:high": "High",
+    "channel:critical": "Critical",
+    "channel:any": "Any",
+    "channel:all": "All",
+    "channel:in_app": "In-app",
+    "channel:email": "Email",
+
+    // Technical field labels
+    rateLph: "Fuel Litres per Hour (L/h)",
+    mil_on: "Check Engine Light (MIL)",
+    has_dtc_fault: "Diagnostic Trouble Code (DTC) Fault",
+    dtc_codes: "Diagnostic Trouble Codes (DTC)",
+    engine_rpm: "Engine RPM",
+    coolant_temp_c: "Coolant Temperature (°C)",
+    battery_voltage: "Battery Voltage (V)",
+    fuel_level_pct: "Fuel Level (%)",
+    odometer_km: "Odometer (km)",
+    harsh_braking: "Harsh braking",
+    rapid_acceleration: "Harsh acceleration",
+    sharp_cornering: "Sharp cornering",
+    reconciliation_required: "Reconciliation Required",
+
+    // Coded technical values
+    "val:maf": "Mass Air Flow (MAF) estimate",
+    "val:direct": "Direct OBD fuel rate",
+    "val:maf_petrol_estimate": "MAF petrol estimate",
+    "val:direct_packet_snapshot": "Direct packet snapshot",
+    "val:packet_snapshot": "Packet snapshot",
+    "val:reported_fix": "Reported fix",
+    "val:unusable": "Unusable",
+    "val:unreported": "Unreported",
+    "val:unverified_edge_claim": "Unverified edge claim",
+    "val:pi_snapshot_v1": "Edge device snapshot (v1)",
+    "val:canonical_v1": "Canonical telemetry (v1)",
+    "val:telemetry_gap": "Telemetry gap",
+    "val:automatic_end": "Automatic end",
+    "val:stationary_engine_off": "Stationary (engine off)",
+    "val:stationary_engine_unknown": "Stationary (engine state unknown)",
+    "val:not_implemented": "Not implemented",
+    "val:uncalibrated_speed_difference": "Uncalibrated speed difference",
+    "val:odometer_reported": "Odometer reported",
+    "val:gps_estimated": "GPS estimated",
+    "val:speed_trapezoid": "Speed trapezoid",
+    "val:speed_estimated": "Speed estimated",
+    "val:gps_coordinates": "GPS coordinates",
+    "val:normal": "Normal",
+    "val:harsh_braking": "Harsh braking",
+    "val:rapid_acceleration": "Harsh acceleration",
+    "val:harsh_acceleration": "Harsh acceleration",
+    "val:sharp_cornering": "Sharp cornering",
+    "= {metres} sent to server": "= {metres} sent to server",
+    "= {minor} minor units sent to server":
+      "= {minor} minor units sent to server",
+  },
+  ms: {
+    // Core labels & booleans
+    Original: "Asal",
+    "Original field": "Medan asal",
+    original_field: "Medan asal",
+    "Original value": "Nilai asal",
+    Yes: "Ya",
+    yes: "Ya",
+    No: "Tidak",
+    no: "Tidak",
+    Unknown: "Tidak diketahui",
+    unknown: "Tidak diketahui",
+    Empty: "Kosong",
+    empty: "Tiada rekod dikembalikan",
+    Close: "Tutup",
+    Actions: "Tindakan",
+    Updated: "Dikemas kini",
+    Account: "Akaun",
+    Vehicle: "Kenderaan",
+    days: "hari",
+
+    // Shared navigation / common messages
+    signIn: "Log masuk ke CarLink",
+    email: "Alamat e-mel",
+    requestLink: "Hantar pautan log masuk",
+    confirmLogin: "Sahkan log masuk",
+    confirmInvitation: "Terima jemputan",
+    signOut: "Log keluar",
+    refresh: "Muat semula",
+    previous: "Sebelumnya",
+    next: "Seterusnya",
+    search: "Cari baris yang dimuatkan",
+    save: "Semak & simpan",
+    cancel: "Batal",
+    confirm: "Sahkan tindakan",
+    language: "Bahasa",
+    organization: "Organisasi",
+    workspace: "Ruang kerja",
+    platform: "Pentadbiran SaaS",
+    technician: "Ruang juruteknik",
+    fleet: "Ruang organisasi",
+    driver: "Portal pemandu",
+    loading: "Memuatkan ruang kerja",
+    account: "Akaun saya",
+    loaded: "rekod dimuatkan",
+    observed: "Diperhatikan",
+    status: "Status",
+    pending: "Menunggu",
+    active: "Aktif",
+    suspended: "Digantung",
+    inactive: "Tidak aktif",
+    recent_packet: "Paket terkini",
+    stale: "Pemerhatian lama",
+    never_observed: "Belum diperhatikan",
+    submitted: "Dihantar",
+    approved: "Diluluskan",
+    rejected: "Ditolak",
+    paid: "Dibayar",
+    succeeded: "Berjaya",
+    valid: "Sah",
+    completed: "Selesai",
+    failed: "Gagal",
+    expired: "Tamat tempoh",
+    critical: "Kritikal",
+    due_soon: "Hampir tamat",
+    in_progress: "Sedang berjalan",
+    registered: "Berdaftar",
+    issued: "Dikeluarkan",
+    open: "Terbuka",
+    archived: "Diarkibkan",
+    superseded: "Digantikan",
+    excluded: "Dikecualikan",
+    uncalibrated_not_distance_normalized:
+      "Tidak ditentukur (tidak dinormalkan mengikut jarak)",
+
+    // App.tsx shell
+    WORKSPACE: "RUANG KERJA",
+    "‹ Collapse": "‹ Lipat",
+    "Toggle sidebar": "Togol bar sisi",
+    "Open navigation": "Buka navigasi",
+    "Open notifications": "Buka pemberitahuan",
+    "Skip to content": "Langkau ke kandungan",
+    "No organization selected": "Tiada organisasi dipilih",
+    "CarLink home & plans": "Laman utama & pelan CarLink",
+    "Create organization": "Cipta organisasi",
+    "CarLink · Fleet operations": "CarLink | Terhubung ke Setiap Batu",
+    "CarLink | Connected to Every Mile": "CarLink | Terhubung ke Setiap Batu",
+    "User Manual": "Manual Pengguna",
+    "Terms & Conditions": "Terma & Syarat",
+    "Privacy Policy": "Dasar Privasi",
+    "For the best experience, use Google Chrome, Microsoft Edge, or Safari at 1920 × 1080 resolution or higher on Desktop, Laptop, or Tablet.":
+      "Untuk pengalaman terbaik, gunakan Google Chrome, Microsoft Edge, atau Safari pada resolusi 1920 × 1080 atau lebih tinggi pada Desktop, Komputer Riba, atau Tablet.",
+    "End this browser session only? Physical NFC shifts and automatic journeys are not ended.":
+      "Tamatkan sesi pelayar ini sahaja? Syif NFC fizikal dan perjalanan automatik tidak ditamatkan.",
+    "Workspace unavailable": "Ruang kerja tidak tersedia",
+    "Your current memberships and permissions do not grant this page.":
+      "Keahlian dan kebenaran semasa anda tidak membenarkan halaman ini.",
+    "Open permitted workspace": "Buka ruang kerja dibenarkan",
+    "Paid operational access is inactive": "Akses operasi berbayar tidak aktif",
+    "Renew your subscription or contact an operator about suspension. Permitted billing/account pages remain available.":
+      "Perbaharui langganan anda atau hubungi pengendali mengenai penggantungan. Halaman pengebilan/akaun yang dibenarkan masih tersedia.",
+    "Open billing": "Buka pengebilan",
+    "Page unavailable": "Halaman tidak tersedia",
+
+    // AuthScreen.tsx
+    "FLEET OPERATIONS, CONNECTED": "OPERASI ARMADA, TERHUBUNG",
+    "One clear view.": "Satu paparan jelas.",
+    "A better connected fleet.": "Armada yang lebih terhubung.",
+    "Bring vehicles, drivers and day-to-day operations together — with the right information in the right hands.":
+      "Satukan kenderaan, pemandu dan operasi harian — dengan maklumat yang tepat di tangan yang tepat.",
+    "Permission-aware workspaces": "Ruang kerja berasaskan kebenaran",
+    "Vehicles, drivers and compliance in one place":
+      "Kenderaan, pemandu dan pematuhan di satu tempat",
+    "Secure, single-use email sign-in":
+      "Log masuk e-mel sekali guna yang selamat",
+    "Fleet · Drivers · Compliance · Managed devices":
+      "Armada · Pemandu · Pematuhan · Peranti terurus",
+    "WELCOME TO CARLINK": "SELAMAT DATANG KE CARLINK",
+    "Confirm your organization": "Sahkan organisasi anda",
+    "Confirm your email to get started": "Sahkan e-mel anda untuk bermula",
+    "This link is missing or invalid. Request a fresh sign-in link.":
+      "Pautan ini tiada atau tidak sah. Minta pautan log masuk baharu.",
+    "Sign in with the invited mailbox in a separate tab, then return here. The invitation is kept only in this tab's memory.":
+      "Log masuk dengan peti mel yang dijemput dalam tab berasingan, kemudian kembali ke sini. Jemputan hanya disimpan dalam memori tab ini.",
+    "Check sign-in status": "Semak status log masuk",
+    "Signed in as {email}. Accepting grants only the server-authorized invitation role.":
+      "Log masuk sebagai {email}. Menerima hanya memberikan peranan jemputan yang dibenarkan pelayan.",
+    "Confirm the organization and plan reviewed in your signup email. Your invoice will be issued and secure payment will open in a new window. Unpaid organizations are permanently deleted after 12 hours.":
+      "Sahkan organisasi dan pelan yang disemak dalam e-mel pendaftaran anda. Invois anda akan dikeluarkan dan pembayaran selamat akan dibuka dalam tetingkap baharu. Organisasi yang belum dibayar akan dipadamkan secara kekal selepas 12 jam.",
+    "Confirm below to sign in securely. This link works once.":
+      "Sahkan di bawah untuk log masuk dengan selamat. Pautan ini berfungsi sekali sahaja.",
+    "Confirm & continue to payment": "Sahkan & teruskan ke pembayaran",
+    "Check your email": "Semak e-mel anda",
+    "If your account is eligible, a link will arrive shortly. It expires after 10 minutes and works once. Check your spam folder if needed.":
+      "Jika akaun anda layak, pautan akan tiba sebentar lagi. Ia tamat tempoh selepas 10 minit dan berfungsi sekali sahaja. Semak folder spam anda jika perlu.",
+    "Confirming email creates an account identity, not an organization or a charge. You will choose and review your plan next.":
+      "Mengesahkan e-mel mencipta identiti akaun, bukan organisasi atau caj. Anda akan memilih dan menyemak pelan anda seterusnya.",
+    "Sign in securely by email — no password needed.":
+      "Log masuk dengan selamat melalui e-mel — tiada kata laluan diperlukan.",
+    "Back to CarLink": "Kembali ke CarLink",
+    "Secure API connection": "Sambungan API selamat",
+
+    // CoordinateMap.tsx
+    "Ant Light": "Ant Cerah",
+    Standard: "Standard",
+    Slate: "Kelabu Gelap",
+    Fit: "Muatkan",
+    "Zoom in": "Zum masuk",
+    "Zoom out": "Zum keluar",
+    "Reset map": "Set semula peta",
+    "Map theme": "Tema peta",
+    "Map pin legend": "Petunjuk pin peta",
+    "Interactive OpenStreetMap fleet coordinates":
+      "Koordinat armada OpenStreetMap interaktif",
+    "No observed coordinates in this window":
+      "Tiada koordinat diperhatikan dalam tetingkap ini",
+    "Freshness unknown": "Kesegaran tidak diketahui",
+    "Telemetry gap ({seconds}s)": "Jurang telemetri ({seconds}s)",
+    "Signal: {value} dBm ({band})": "Isyarat: {value} dBm ({band})",
+    "Signal unknown": "Isyarat tidak diketahui",
+    "Speed: {value} km/h": "Kelajuan: {value} km/j",
+    "Speed unknown": "Kelajuan tidak diketahui",
+    "Danger driving event": "Peristiwa pemanduan berbahaya",
+    Start: "Mula",
+    Latest: "Terkini",
+    "Inspect vehicle": "Periksa kenderaan",
+    "Accel: {value} m/s²": "Pecutan: {value} m/s²",
+    " (thresh {value} m/s²)": " (ambang {value} m/s²)",
+    "Detector: {sources}": "Pengesan: {sources}",
+    Operator: "Pengendali",
+    RSRP: "RSRP",
+    SINR: "SINR",
+    Coords: "Koordinat",
+    Observed: "Diperhatikan",
+    "Fault code": "Kod kerosakan",
+    "Route start": "Permulaan laluan",
+    "Latest point": "Titik terkini",
+    Speed: "Kelajuan",
+    "Engine RPM": "RPM Enjin",
+    "Driver: {name}": "Pemandu: {name}",
+    "No active driver": "Tiada pemandu aktif",
+    "Current driver": "Pemandu semasa",
+    current_driver_name: "Pemandu semasa",
+    current_vehicle_registration: "Kenderaan semasa",
+    registration_number: "Nombor pendaftaran",
+    "{plotted} plotted / {loaded} loaded · OpenStreetMap basemap (zoom {zoom}x) · Missing packets are not dead zones.":
+      "{plotted} diplot / {loaded} dimuatkan · Peta asas OpenStreetMap (zum {zoom}x) · Paket hilang bukan zon mati.",
+    "Latitude {minLat}–{maxLat} · Longitude {minLon}–{maxLon}":
+      "Latitud {minLat}–{maxLat} · Longitud {minLon}–{maxLon}",
+    "Unknown signal": "Isyarat tidak diketahui",
+    "Gap (> 120s)": "Jurang (> 120s)",
+    "Harsh braking": "Brek keras",
+    "Harsh acceleration": "Pecutan keras",
+    "Sharp cornering": "Belokan tajam",
+    "Unknown speed": "Kelajuan tidak diketahui",
+    "Recent packet": "Paket terkini",
+    "Stale observation": "Pemerhatian lama",
+    "Active fault code": "Kod kerosakan aktif",
+    "IMU (5 Hz)": "IMU (5 Hz)",
+    "Server speed Δ": "Δ kelajuan pelayan",
+    "0–9 km/h (Crawl / Stopped)": "0–9 km/j (Merangkak / Berhenti)",
+    "10–34 km/h (Slow urban)": "10–34 km/j (Bandar perlahan)",
+    "35–59 km/h (Cruising)": "35–59 km/j (Lancar)",
+    "60–79 km/h (Brisk)": "60–79 km/j (Pantas)",
+    "80–99 km/h (Fast)": "80–99 km/j (Laju)",
+    "100+ km/h (High speed)": "100+ km/j (Kelajuan tinggi)",
+    "Excellent (≥ -85 dBm)": "Cemerlang (≥ -85 dBm)",
+    "Good (-85 to -95 dBm)": "Baik (-85 hingga -95 dBm)",
+    "Fair (-95 to -105 dBm)": "Sederhana (-95 hingga -105 dBm)",
+    "Weak (-105 to -115 dBm)": "Lemah (-105 hingga -115 dBm)",
+    "Very weak (< -115 dBm)": "Sangat lemah (< -115 dBm)",
+
+    // shared.tsx
+    "error.0": "Semak sambungan anda dan konfigurasi CORS pelayan.",
+    "error.401": "Sesi anda tamat. Log masuk menggunakan pautan e-mel baharu.",
+    "error.402":
+      "Akses operasi memerlukan langganan berbayar yang aktif. Pengebilan dan pentadbiran akaun yang dibenarkan masih tersedia.",
+    "error.403":
+      "Tindakan ini dihadkan oleh kebenaran semasa, ciri yang dibeli atau pengesahan pautan e-mel terkini. Muat semula akses atau minta pautan log masuk baharu.",
+    "error.404":
+      "Rekod ini tidak tersedia atau tidak boleh diakses dalam ruang kerja semasa anda.",
+    "error.409":
+      "Rekod atau versinya telah berubah. Muat semula keadaan semasa, kemudian semak perubahan anda sebelum menghantar semula.",
+    "error.410":
+      "Tarikh akhir pendaftaran atau pembayaran telah berlalu. Jangan bayar pautan pembayaran lama. Semak status pendaftaran atau hubungi pengendali untuk penyelarasan pembayaran lewat.",
+    "error.413":
+      "Muat naik terlalu besar. Dokumen: maksimum 10 MiB. Foto: maksimum 2 MiB.",
+    "error.415":
+      "Hanya permintaan JSON yang disokong dan lampiran JPEG, PNG atau PDF diterima.",
+    "error.419":
+      "Permulaan CSRF diperlukan. Semak HTTPS, domain kuki XSRF-TOKEN yang dikongsi dan asal Sanctum; kemudian hantar semula dengan sengaja.",
+    "error.422":
+      "Semak medan yang diserlahkan dan keperluan tindakan. Draf anda telah disimpan.",
+    "error.429":
+      "Terlalu banyak permintaan. Tunggu sebelum mencuba lagi; pengundian automatik telah dihentikan.",
+    "error.502":
+      "Pelayan API atau huluan mengembalikan HTTP 502. Gunakan rujukan permintaan untuk menyiasat tindak balas pelayan itu.",
+    "error.503":
+      "Kebergantungan pelayan tidak tersedia. Hubungi pengendali menggunakan rujukan permintaan.",
+    "Outcome uncertain — reconcile before retrying":
+      "Keputusan tidak pasti — selaraskan sebelum mencuba semula",
+    "API response format mismatch": "Format respons API tidak sepadan",
+    "Request could not complete ({status})":
+      "Permintaan tidak dapat diselesaikan ({status})",
+    "API unavailable": "API tidak tersedia",
+    "The operation may have committed even though the response failed. Refresh the affected record before making another submission.":
+      "Operasi mungkin telah dilaksanakan walaupun respons gagal. Muat semula rekod yang terjejas sebelum membuat penghantaran lain.",
+    "The server returned HTTP {status}, but this frontend could not read the expected response format. {issue}":
+      "Pelayan mengembalikan HTTP {status}, tetapi bahagian hadapan ini tidak dapat membaca format respons yang dijangkakan. {issue}",
+    "The request failed. Refresh the record or contact an operator.":
+      "Permintaan gagal. Muat semula rekod atau hubungi pengendali.",
+    "Endpoint: {path}": "Titik akhir: {path}",
+    "Request ID: {requestId}": "ID Permintaan: {requestId}",
+    "Retry after {seconds} seconds.": "Cuba semula selepas {seconds} saat.",
+    "Refresh state": "Muat semula keadaan",
+    "{count} items": "{count} item",
+    "Sort by date": "Isih mengikut tarikh",
+    "Newest first (recent)": "Terbaharu dahulu (terkini)",
+    "Oldest first": "Terlama dahulu",
+    "Last successful result — refresh failed":
+      "Keputusan berjaya terakhir — muat semula gagal",
+    "Scroll the table horizontally for more columns.":
+      "Tatal jadual secara mendatar untuk lebih banyak lajur.",
+    "Scroll the table horizontally for more columns and actions.":
+      "Tatal jadual secara mendatar untuk lebih banyak lajur dan tindakan.",
+    "{count} returned": "{count} dikembalikan",
+    "{count} returned on this capped page":
+      "{count} dikembalikan pada halaman terhad ini",
+    "Server-limited list; no full-fleet total is available.":
+      "Senarai terhad pelayan; tiada jumlah keseluruhan armada tersedia.",
+    "Last 1 hour": "1 jam terakhir",
+    "Last 6 hours": "6 jam terakhir",
+    "Last 24 hours": "24 jam terakhir",
+    "Last 7 days": "7 hari terakhir",
+    "Last 30 days": "30 hari terakhir",
+    "Choose an increasing range within the allowed window.":
+      "Pilih julat menaik dalam tetingkap yang dibenarkan.",
+    "24 hours": "24 jam",
+    "{days} days": "{days} hari",
+    "Maximum {limit} · Your account timezone":
+      "Maksimum {limit} · Zon waktu akaun anda",
+
+    // workflow.tsx
+    "Current server version. Refresh after every successful change.":
+      "Versi pelayan semasa. Muat semula selepas setiap perubahan yang berjaya.",
+    "Select an authorized record": "Pilih rekod yang dibenarkan",
+    "Load next page": "Muat halaman seterusnya",
+    "Threshold key": "Kunci ambang",
+    "Unique key": "Kunci unik",
+    "Threshold severity": "Tahap keterukan ambang",
+    "Remaining kilometres": "Baki kilometer",
+    "Remaining km ≤": "Baki km ≤",
+    "Remaining days": "Baki hari",
+    "Remaining days ≤": "Baki hari ≤",
+    "Threshold matching": "Padanan ambang",
+    "Threshold channels": "Saluran ambang",
+    "Remove threshold": "Buang ambang",
+    "Add threshold": "Tambah ambang",
+    "This field is required.": "Medan ini diperlukan.",
+    "Enter the expected format.": "Masukkan format yang dijangkakan.",
+    "Explicit acknowledgment is required.": "Pengakuan jelas diperlukan.",
+    "Use an ISO timestamp with a timezone offset.":
+      "Gunakan cap masa ISO dengan ofset zon waktu.",
+    "Submit this change to the server? Current authorization and business rules will be checked.":
+      "Hantar perubahan ini ke pelayan? Kebenaran semasa dan peraturan perniagaan akan disemak.",
+    "Review current server state": "Semak keadaan pelayan semasa",
+    "Your proposed fields are preserved. Review this server state before using its current version.":
+      "Medan cadangan anda dikekalkan. Semak keadaan pelayan ini sebelum menggunakan versi semasanya.",
+    "Use fetched version with my draft":
+      "Gunakan versi yang diambil bersama draf saya",
+    "Only the unchanged draft can be retried with the same idempotency key. Reconcile before editing or starting a new operation.":
+      "Hanya draf yang tidak berubah boleh dicuba semula dengan kunci idempotensi yang sama. Selaraskan sebelum menyunting atau memulakan operasi baharu.",
+    "Reconcile this outcome before closing and starting a replacement operation.":
+      "Selaraskan keputusan ini sebelum menutup dan memulakan operasi gantian.",
+    "Accepted/queued is not proof of completion.":
+      "Diterima/beratur bukan bukti selesai.",
+    "Confirm this server action. It cannot be automatically retried.":
+      "Sahkan tindakan pelayan ini. Ia tidak boleh dicuba semula secara automatik.",
+    "Accepted/queued — completion is not yet confirmed.":
+      "Diterima/beratur — penyelesaian belum disahkan lagi.",
+    "channel:info": "Maklumat",
+    "channel:warning": "Amaran",
+    "channel:high": "Tinggi",
+    "channel:critical": "Kritikal",
+    "channel:any": "Mana-mana",
+    "channel:all": "Semua",
+    "channel:in_app": "Dalam aplikasi",
+    "channel:email": "E-mel",
+
+    // Technical field labels
+    rateLph: "Liter Bahan Api Sejam (L/j)",
+    mil_on: "Lampu Periksa Enjin (MIL)",
+    has_dtc_fault: "Ralat Kod Masalah Diagnostik (DTC)",
+    dtc_codes: "Kod Masalah Diagnostik (DTC)",
+    engine_rpm: "RPM Enjin",
+    coolant_temp_c: "Suhu Penyejuk (°C)",
+    battery_voltage: "Voltan Bateri (V)",
+    fuel_level_pct: "Paras Bahan Api (%)",
+    odometer_km: "Odometer (km)",
+    harsh_braking: "Brek keras",
+    rapid_acceleration: "Pecutan keras",
+    sharp_cornering: "Belokan tajam",
+    reconciliation_required: "Penyelarasan Diperlukan",
+
+    // Coded technical values
+    "val:maf": "Anggaran Aliran Udara Jisim (MAF)",
+    "val:direct": "Kadar bahan api OBD terus",
+    "val:maf_petrol_estimate": "Anggaran petrol MAF",
+    "val:direct_packet_snapshot": "Petikan paket terus",
+    "val:packet_snapshot": "Petikan paket",
+    "val:reported_fix": "Pembaikan dilaporkan",
+    "val:unusable": "Tidak boleh digunakan",
+    "val:unreported": "Tidak dilaporkan",
+    "val:unverified_edge_claim": "Tuntutan peranti tepi belum disahkan",
+    "val:pi_snapshot_v1": "Petikan peranti tepi (v1)",
+    "val:canonical_v1": "Telemetri kanonik (v1)",
+    "val:telemetry_gap": "Jurang telemetri",
+    "val:automatic_end": "Tamat automatik",
+    "val:stationary_engine_off": "Pegun (enjin mati)",
+    "val:stationary_engine_unknown": "Pegun (status enjin tidak diketahui)",
+    "val:not_implemented": "Belum dilaksanakan",
+    "val:uncalibrated_speed_difference": "Perbezaan kelajuan tidak ditentukur",
+    "val:odometer_reported": "Dilaporkan odometer",
+    "val:gps_estimated": "Dianggarkan GPS",
+    "val:speed_trapezoid": "Trapezoid kelajuan",
+    "val:speed_estimated": "Dianggarkan kelajuan",
+    "val:gps_coordinates": "Koordinat GPS",
+    "val:normal": "Normal",
+    "val:harsh_braking": "Brek keras",
+    "val:rapid_acceleration": "Pecutan keras",
+    "val:harsh_acceleration": "Pecutan keras",
+    "val:sharp_cornering": "Belokan tajam",
+    "= {metres} sent to server": "= {metres} dihantar ke pelayan",
+    "= {minor} minor units sent to server":
+      "= {minor} unit minor dihantar ke pelayan",
+  },
+  zh: {
+    // Core labels & booleans
+    Original: "原始",
+    "Original field": "原始字段",
+    original_field: "原始字段",
+    "Original value": "原始值",
+    Yes: "是",
+    yes: "是",
+    No: "否",
+    no: "否",
+    Unknown: "未知",
+    unknown: "未知",
+    Empty: "空",
+    empty: "没有返回记录",
+    Close: "关闭",
+    Actions: "操作",
+    Updated: "更新于",
+    Account: "账户",
+    Vehicle: "车辆",
+    days: "天",
+
+    // Shared navigation / common messages
+    signIn: "登录 CarLink",
+    email: "电子邮箱",
+    requestLink: "发送登录链接",
+    confirmLogin: "确认登录",
+    confirmInvitation: "接受邀请",
+    signOut: "退出登录",
+    refresh: "刷新",
+    previous: "上一页",
+    next: "下一页",
+    search: "搜索已加载的记录",
+    save: "审核并保存",
+    cancel: "取消",
+    confirm: "确认操作",
+    language: "语言",
+    organization: "组织",
+    workspace: "工作区",
+    platform: "SaaS 管理",
+    technician: "技术人员工作区",
+    fleet: "组织工作区",
+    driver: "驾驶员门户",
+    loading: "正在加载工作区",
+    account: "我的账户",
+    loaded: "条已加载记录",
+    observed: "已观察",
+    status: "状态",
+    pending: "待处理",
+    active: "有效",
+    suspended: "已暂停",
+    inactive: "未激活",
+    recent_packet: "近期数据包",
+    stale: "过时观察",
+    never_observed: "尚未观察",
+    submitted: "已提交",
+    approved: "已批准",
+    rejected: "已拒绝",
+    paid: "已支付",
+    succeeded: "成功",
+    valid: "有效",
+    completed: "已完成",
+    failed: "失败",
+    expired: "已过期",
+    critical: "严重",
+    due_soon: "即将到期",
+    in_progress: "进行中",
+    registered: "已注册",
+    issued: "已开具",
+    open: "打开",
+    archived: "已归档",
+    superseded: "已替代",
+    excluded: "已排除",
+    uncalibrated_not_distance_normalized: "未校准（未按里程归一化）",
+
+    // App.tsx shell
+    WORKSPACE: "工作区",
+    "‹ Collapse": "‹ 收起",
+    "Toggle sidebar": "切换侧边栏",
+    "Open navigation": "打开导航",
+    "Open notifications": "打开通知",
+    "Skip to content": "跳至正文",
+    "No organization selected": "未选择组织",
+    "CarLink home & plans": "CarLink 首页与套餐",
+    "Create organization": "创建组织",
+    "CarLink · Fleet operations": "CarLink | 连接每一程",
+    "CarLink | Connected to Every Mile": "CarLink | 连接每一程",
+    "User Manual": "用户手册",
+    "Terms & Conditions": "条款与条件",
+    "Privacy Policy": "隐私政策",
+    "For the best experience, use Google Chrome, Microsoft Edge, or Safari at 1920 × 1080 resolution or higher on Desktop, Laptop, or Tablet.":
+      "为获得最佳体验，建议在台式机、笔记本电脑或平板电脑上使用 Google Chrome、Microsoft Edge 或 Safari 浏览器，并将分辨率设为 1920 × 1080 及以上。",
+    "End this browser session only? Physical NFC shifts and automatic journeys are not ended.":
+      "仅结束此浏览器会话？物理 NFC 班次和自动行程不会被结束。",
+    "Workspace unavailable": "工作区不可用",
+    "Your current memberships and permissions do not grant this page.":
+      "您当前的成员身份和权限无权访问此页面。",
+    "Open permitted workspace": "打开允许的工作区",
+    "Paid operational access is inactive": "付费运营访问未激活",
+    "Renew your subscription or contact an operator about suspension. Permitted billing/account pages remain available.":
+      "请续订您的订阅或就暂停事宜联系运营人员。允许访问的账单与账户页面仍可使用。",
+    "Open billing": "打开账单",
+    "Page unavailable": "页面不可用",
+
+    // AuthScreen.tsx
+    "FLEET OPERATIONS, CONNECTED": "互联车队运营",
+    "One clear view.": "清晰全局视角。",
+    "A better connected fleet.": "更智能互联的车队。",
+    "Bring vehicles, drivers and day-to-day operations together — with the right information in the right hands.":
+      "将车辆、驾驶员与日常运营集中管理 — 让正确的人掌握准确的信息。",
+    "Permission-aware workspaces": "基于权限的工作区",
+    "Vehicles, drivers and compliance in one place":
+      "车辆、驾驶员与合规一站式管理",
+    "Secure, single-use email sign-in": "安全的一次性邮箱登录",
+    "Fleet · Drivers · Compliance · Managed devices":
+      "车队 · 驾驶员 · 合规 · 托管设备",
+    "WELCOME TO CARLINK": "欢迎使用 CARLINK",
+    "Confirm your organization": "确认您的组织",
+    "Confirm your email to get started": "确认您的邮箱以开始使用",
+    "This link is missing or invalid. Request a fresh sign-in link.":
+      "此链接缺失或无效。请重新请求新的登录链接。",
+    "Sign in with the invited mailbox in a separate tab, then return here. The invitation is kept only in this tab's memory.":
+      "请在单独的标签页中使用受邀邮箱登录，然后返回此处。该邀请仅保存在当前标签页内存中。",
+    "Check sign-in status": "检查登录状态",
+    "Signed in as {email}. Accepting grants only the server-authorized invitation role.":
+      "已登录为 {email}。接受后仅授予服务器授权的邀请角色。",
+    "Confirm the organization and plan reviewed in your signup email. Your invoice will be issued and secure payment will open in a new window. Unpaid organizations are permanently deleted after 12 hours.":
+      "请确认您在注册邮件中核对的组织与套餐。系统将开具发票并在新窗口中打开安全支付页面。未付款的组织将在 12 小时后被永久删除。",
+    "Confirm below to sign in securely. This link works once.":
+      "请在下方确认以安全登录。此链接仅可使用一次。",
+    "Confirm & continue to payment": "确认并继续付款",
+    "Check your email": "请查收您的邮箱",
+    "If your account is eligible, a link will arrive shortly. It expires after 10 minutes and works once. Check your spam folder if needed.":
+      "如果您的账户符合条件，登录链接将很快送达。链接将在 10 分钟后失效且仅可使用一次。如有需要请检查垃圾邮件箱。",
+    "Confirming email creates an account identity, not an organization or a charge. You will choose and review your plan next.":
+      "确认邮箱仅创建账户身份，不会创建组织或产生费用。您将在下一步选择并核对套餐。",
+    "Sign in securely by email — no password needed.":
+      "通过邮箱安全登录 — 无需密码。",
+    "Back to CarLink": "返回 CarLink",
+    "Secure API connection": "安全 API 连接",
+
+    // CoordinateMap.tsx
+    "Ant Light": "浅色简洁",
+    Standard: "标准",
+    Slate: "深灰",
+    Fit: "适应视图",
+    "Zoom in": "放大",
+    "Zoom out": "缩小",
+    "Reset map": "重置地图",
+    "Map theme": "地图主题",
+    "Map pin legend": "地图图例",
+    "Interactive OpenStreetMap fleet coordinates":
+      "交互式 OpenStreetMap 车队坐标地图",
+    "No observed coordinates in this window": "此时间窗口内没有已观察坐标",
+    "Freshness unknown": "时效未知",
+    "Telemetry gap ({seconds}s)": "遥测间隔 ({seconds}秒)",
+    "Signal: {value} dBm ({band})": "信号：{value} dBm ({band})",
+    "Signal unknown": "信号未知",
+    "Speed: {value} km/h": "速度：{value} km/h",
+    "Speed unknown": "速度未知",
+    "Danger driving event": "危险驾驶事件",
+    Start: "起点",
+    Latest: "最新",
+    "Inspect vehicle": "查看车辆",
+    "Accel: {value} m/s²": "加速度：{value} m/s²",
+    " (thresh {value} m/s²)": "（阈值 {value} m/s²）",
+    "Detector: {sources}": "检测来源：{sources}",
+    Operator: "运营商",
+    RSRP: "RSRP",
+    SINR: "SINR",
+    Coords: "坐标",
+    Observed: "观察时间",
+    "Fault code": "故障码",
+    "Route start": "行程起点",
+    "Latest point": "最新位置",
+    Speed: "速度",
+    "Engine RPM": "发动机转速",
+    "Driver: {name}": "驾驶员：{name}",
+    "No active driver": "暂无当前驾驶员",
+    "Current driver": "当前驾驶员",
+    current_driver_name: "当前驾驶员",
+    current_vehicle_registration: "当前车辆",
+    registration_number: "车牌号",
+    "{plotted} plotted / {loaded} loaded · OpenStreetMap basemap (zoom {zoom}x) · Missing packets are not dead zones.":
+      "已绘制 {plotted} 条 / 已加载 {loaded} 条 · OpenStreetMap 底图（缩放 {zoom}x）· 缺失数据包不代表信号盲区。",
+    "Latitude {minLat}–{maxLat} · Longitude {minLon}–{maxLon}":
+      "纬度 {minLat}–{maxLat} · 经度 {minLon}–{maxLon}",
+    "Unknown signal": "未知信号",
+    "Gap (> 120s)": "中断 (> 120秒)",
+    "Harsh braking": "急刹车",
+    "Harsh acceleration": "急加速",
+    "Sharp cornering": "急转弯",
+    "Unknown speed": "未知速度",
+    "Recent packet": "近期数据包",
+    "Stale observation": "过时观察",
+    "Active fault code": "当前故障码",
+    "IMU (5 Hz)": "IMU (5 Hz)",
+    "Server speed Δ": "服务器速度差 Δ",
+    "0–9 km/h (Crawl / Stopped)": "0–9 km/h（缓行 / 停车）",
+    "10–34 km/h (Slow urban)": "10–34 km/h（城区慢行）",
+    "35–59 km/h (Cruising)": "35–59 km/h（巡航）",
+    "60–79 km/h (Brisk)": "60–79 km/h（较快）",
+    "80–99 km/h (Fast)": "80–99 km/h（快速）",
+    "100+ km/h (High speed)": "100+ km/h（高速）",
+    "Excellent (≥ -85 dBm)": "极佳 (≥ -85 dBm)",
+    "Good (-85 to -95 dBm)": "良好 (-85 至 -95 dBm)",
+    "Fair (-95 to -105 dBm)": "一般 (-95 至 -105 dBm)",
+    "Weak (-105 to -115 dBm)": "较弱 (-105 至 -115 dBm)",
+    "Very weak (< -115 dBm)": "极弱 (< -115 dBm)",
+
+    // shared.tsx
+    "error.0": "请检查网络连接和后端 CORS 配置。",
+    "error.401": "您的会话已过期，请使用新的邮件链接登录。",
+    "error.402":
+      "运营访问需要有效的付费订阅。账单与受允许的账户管理页面仍可使用。",
+    "error.403":
+      "此操作受当前权限、已购功能或近期邮件验证限制。请刷新权限或重新请求登录链接。",
+    "error.404": "此记录不可用或无法在当前工作区中访问。",
+    "error.409":
+      "记录或其版本已变更。请刷新当前状态，核对您的修改后再重新提交。",
+    "error.410":
+      "注册或付款截止时间已过。请勿支付旧的结账链接。请检查注册状态或联系运营人员处理逾期付款核对。",
+    "error.413": "上传文件过大。文档最大 10 MiB，照片最大 2 MiB。",
+    "error.415": "仅支持 JSON 请求及 JPEG、PNG 或 PDF 附件。",
+    "error.419":
+      "需要初始化 CSRF。请检查 HTTPS、共享 XSRF-TOKEN Cookie 域和 Sanctum 来源配置，然后再提交。",
+    "error.422": "请检查高亮显示的字段及操作要求。您的草稿已保留。",
+    "error.429": "请求过于频繁。请稍后再试；自动轮询已停止。",
+    "error.502":
+      "API 服务器或其上游返回 HTTP 502。请使用请求参考编号排查该服务器响应。",
+    "error.503": "后端依赖项不可用。请使用请求参考编号联系运营人员。",
+    "Outcome uncertain — reconcile before retrying":
+      "结果不确定 — 请先核对后再重试",
+    "API response format mismatch": "API 响应格式不匹配",
+    "Request could not complete ({status})": "请求无法完成 ({status})",
+    "API unavailable": "API 不可用",
+    "The operation may have committed even though the response failed. Refresh the affected record before making another submission.":
+      "尽管响应失败，操作可能已经提交成功。请先刷新相关记录，再发起新的提交。",
+    "The server returned HTTP {status}, but this frontend could not read the expected response format. {issue}":
+      "服务器返回了 HTTP {status}，但前端无法解析预期的响应格式。{issue}",
+    "The request failed. Refresh the record or contact an operator.":
+      "请求失败。请刷新记录或联系运营人员。",
+    "Endpoint: {path}": "接口路径：{path}",
+    "Request ID: {requestId}": "请求 ID：{requestId}",
+    "Retry after {seconds} seconds.": "请在 {seconds} 秒后重试。",
+    "Refresh state": "刷新状态",
+    "{count} items": "{count} 项",
+    "Sort by date": "按日期排序",
+    "Newest first (recent)": "最新优先（近期）",
+    "Oldest first": "最早优先",
+    "Last successful result — refresh failed": "上次成功结果 — 本次刷新失败",
+    "Scroll the table horizontally for more columns.":
+      "横向滚动表格查看更多列。",
+    "Scroll the table horizontally for more columns and actions.":
+      "横向滚动表格查看更多列和操作。",
+    "{count} returned": "返回 {count} 条",
+    "{count} returned on this capped page": "此上限分页返回 {count} 条",
+    "Server-limited list; no full-fleet total is available.":
+      "服务器限制列表；无法获取全车队总数。",
+    "Last 1 hour": "最近 1 小时",
+    "Last 6 hours": "最近 6 小时",
+    "Last 24 hours": "最近 24 小时",
+    "Last 7 days": "最近 7 天",
+    "Last 30 days": "最近 30 天",
+    "Choose an increasing range within the allowed window.":
+      "请在允许的时间窗口内选择有效的起止范围。",
+    "24 hours": "24 小时",
+    "{days} days": "{days} 天",
+    "Maximum {limit} · Your account timezone":
+      "最长 {limit} · 使用您的账户时区",
+
+    // workflow.tsx
+    "Current server version. Refresh after every successful change.":
+      "当前服务器版本。每次成功修改后请刷新。",
+    "Select an authorized record": "选择已授权记录",
+    "Load next page": "加载下一页",
+    "Threshold key": "阈值标识",
+    "Unique key": "唯一标识",
+    "Threshold severity": "阈值严重级别",
+    "Remaining kilometres": "剩余公里数",
+    "Remaining km ≤": "剩余公里 ≤",
+    "Remaining days": "剩余天数",
+    "Remaining days ≤": "剩余天数 ≤",
+    "Threshold matching": "阈值匹配方式",
+    "Threshold channels": "通知渠道",
+    "Remove threshold": "移除阈值",
+    "Add threshold": "添加阈值",
+    "This field is required.": "此字段为必填项。",
+    "Enter the expected format.": "请输入符合要求格式的数值。",
+    "Explicit acknowledgment is required.": "需要明确勾选确认。",
+    "Use an ISO timestamp with a timezone offset.":
+      "请使用带时区偏移的 ISO 时间戳。",
+    "Submit this change to the server? Current authorization and business rules will be checked.":
+      "确定将此更改提交到服务器？系统将校验当前权限和业务规则。",
+    "Review current server state": "查看当前服务器状态",
+    "Your proposed fields are preserved. Review this server state before using its current version.":
+      "您填写的内容已保留。使用当前版本号前，请先核对服务器最新状态。",
+    "Use fetched version with my draft": "将获取的版本号应用到我的草稿",
+    "Only the unchanged draft can be retried with the same idempotency key. Reconcile before editing or starting a new operation.":
+      "只有未修改的草稿才能使用相同的幂等键重试。在编辑或发起新操作前，请先核对结果。",
+    "Reconcile this outcome before closing and starting a replacement operation.":
+      "在关闭并发起替代操作前，请先核对此结果。",
+    "Accepted/queued is not proof of completion.":
+      "已接收/已排队不代表操作已完成。",
+    "Confirm this server action. It cannot be automatically retried.":
+      "确认执行此服务器操作？此操作无法自动重试。",
+    "Accepted/queued — completion is not yet confirmed.":
+      "已接收/已排队 — 尚未确认完成。",
+    "channel:info": "提示",
+    "channel:warning": "警告",
+    "channel:high": "高",
+    "channel:critical": "严重",
+    "channel:any": "满足任一",
+    "channel:all": "满足全部",
+    "channel:in_app": "站内通知",
+    "channel:email": "电子邮件",
+
+    // Technical field labels
+    rateLph: "每小时油耗 (L/h)",
+    mil_on: "发动机故障灯 (MIL)",
+    has_dtc_fault: "诊断故障码 (DTC) 故障",
+    dtc_codes: "诊断故障码 (DTC)",
+    engine_rpm: "发动机转速 (RPM)",
+    coolant_temp_c: "冷却液温度 (°C)",
+    battery_voltage: "蓄电池电压 (V)",
+    fuel_level_pct: "油量 (%)",
+    odometer_km: "里程表 (km)",
+    harsh_braking: "急刹车",
+    rapid_acceleration: "急加速",
+    sharp_cornering: "急转弯",
+    reconciliation_required: "需要对账",
+
+    // Coded technical values
+    "val:maf": "空气流量传感器 (MAF) 估算",
+    "val:direct": "OBD 直接燃油速率",
+    "val:maf_petrol_estimate": "MAF 汽油油耗估算",
+    "val:direct_packet_snapshot": "直接数据包快照",
+    "val:packet_snapshot": "数据包快照",
+    "val:reported_fix": "已报告维修",
+    "val:unusable": "不可用",
+    "val:unreported": "未报告",
+    "val:unverified_edge_claim": "未验证的边缘端声明",
+    "val:pi_snapshot_v1": "边缘设备快照 (v1)",
+    "val:canonical_v1": "标准遥测格式 (v1)",
+    "val:telemetry_gap": "遥测数据缺失间隔",
+    "val:automatic_end": "自动结束",
+    "val:stationary_engine_off": "车辆静止（发动机熄火）",
+    "val:stationary_engine_unknown": "车辆静止（发动机状态未知）",
+    "val:not_implemented": "尚未实现",
+    "val:uncalibrated_speed_difference": "未校准的速度差",
+    "val:odometer_reported": "里程表上报",
+    "val:gps_estimated": "GPS 估算",
+    "val:speed_trapezoid": "速度梯形积分",
+    "val:speed_estimated": "速度估算",
+    "val:gps_coordinates": "GPS 坐标",
+    "val:normal": "正常",
+    "val:harsh_braking": "急刹车",
+    "val:rapid_acceleration": "急加速",
+    "val:harsh_acceleration": "急加速",
+    "val:sharp_cornering": "急转弯",
+    "= {metres} sent to server": "= {metres}（将提交至服务器）",
+    "= {minor} minor units sent to server":
+      "= {minor} 最小单位（将提交至服务器）",
+  },
+  ta: {
+    // Core labels & booleans
+    Original: "அசல்",
+    "Original field": "அசல் புலம்",
+    original_field: "அசல் புலம்",
+    "Original value": "அசல் மதிப்பு",
+    Yes: "ஆம்",
+    yes: "ஆம்",
+    No: "இல்லை",
+    no: "இல்லை",
+    Unknown: "தெரியாதது",
+    unknown: "தெரியாதது",
+    Empty: "காலி",
+    empty: "பதிவுகள் எதுவும் இல்லை",
+    Close: "மூடு",
+    Actions: "செயல்கள்",
+    Updated: "புதுப்பிக்கப்பட்டது",
+    Account: "கணக்கு",
+    Vehicle: "வாகனம்",
+    days: "நாட்கள்",
+
+    // Shared navigation / common messages
+    signIn: "CarLink-இல் உள்நுழையவும்",
+    email: "மின்னஞ்சல் முகவரி",
+    requestLink: "உள்நுழைவு இணைப்பை மின்னஞ்சல் செய்க",
+    confirmLogin: "உள்நுழைவை உறுதி செய்க",
+    confirmInvitation: "அழைப்பை ஏற்றுக்கொள்",
+    signOut: "வெளியேறு",
+    refresh: "புதுப்பி",
+    previous: "முந்தையது",
+    next: "அடுத்தது",
+    search: "ஏற்றப்பட்ட வரிசைகளில் தேடு",
+    save: "சரிபார்த்து சேமி",
+    cancel: "ரத்து செய்",
+    confirm: "செயலை உறுதி செய்",
+    language: "மொழி",
+    organization: "அமைப்பு",
+    workspace: "பணியிடம்",
+    platform: "SaaS நிர்வாகம்",
+    technician: "தொழில்நுட்பப் பணியிடம்",
+    fleet: "அமைப்பு பணியிடம்",
+    driver: "ஓட்டுநர் போர்டல்",
+    loading: "உங்கள் பணியிடம் ஏற்றப்படுகிறது",
+    account: "என் கணக்கு",
+    loaded: "பதிவுகள் ஏற்றப்பட்டன",
+    observed: "கவனிக்கப்பட்டது",
+    status: "நிலை",
+    pending: "நிலுவையில்",
+    active: "செயலில்",
+    suspended: "இடைநிறுத்தப்பட்டது",
+    inactive: "செயலற்றது",
+    recent_packet: "சமீபத்திய தரவு பொதி",
+    stale: "பழைய கவனிப்பு",
+    never_observed: "கவனிக்கப்படவில்லை",
+    submitted: "சமர்ப்பிக்கப்பட்டது",
+    approved: "அங்கீகரிக்கப்பட்டது",
+    rejected: "நிராகரிக்கப்பட்டது",
+    paid: "செலுத்தப்பட்டது",
+    succeeded: "வெற்றி",
+    valid: "செல்லுபடியாகும்",
+    completed: "முடிந்தது",
+    failed: "தோல்வி",
+    expired: "காலாவதியானது",
+    critical: "முக்கியமானது",
+    due_soon: "விரைவில் காலாவதி",
+    in_progress: "நடைபெறுகிறது",
+    registered: "பதிவு செய்யப்பட்டது",
+    issued: "வழங்கப்பட்டது",
+    open: "திறந்தது",
+    archived: "காப்பகப்படுத்தப்பட்டது",
+    superseded: "மாற்றப்பட்டது",
+    excluded: "விலக்கப்பட்டது",
+    uncalibrated_not_distance_normalized:
+      "அளவீடு செய்யப்படாதது (தூரத்திற்கு சீரமைக்கப்படவில்லை)",
+
+    // App.tsx shell
+    WORKSPACE: "பணியிடம்",
+    "‹ Collapse": "‹ சுருக்கு",
+    "Toggle sidebar": "பக்கப்பட்டியை மாற்று",
+    "Open navigation": "வழிசெலுத்தலைத் திற",
+    "Open notifications": "அறிவிப்புகளைத் திற",
+    "Skip to content": "உள்ளடக்கத்திற்குச் செல்",
+    "No organization selected": "அமைப்பு எதுவும் தேர்ந்தெடுக்கப்படவில்லை",
+    "CarLink home & plans": "CarLink முகப்பு & திட்டங்கள்",
+    "Create organization": "அமைப்பை உருவாக்கு",
+    "CarLink · Fleet operations": "CarLink | ஒவ்வொரு மைலுக்கும் இணைக்கப்பட்டது",
+    "CarLink | Connected to Every Mile":
+      "CarLink | ஒவ்வொரு மைலுக்கும் இணைக்கப்பட்டது",
+    "User Manual": "பயனர் கையேடு",
+    "Terms & Conditions": "விதிமுறைகள் & நிபந்தனைகள்",
+    "Privacy Policy": "தனியுரிமைக் கொள்கை",
+    "For the best experience, use Google Chrome, Microsoft Edge, or Safari at 1920 × 1080 resolution or higher on Desktop, Laptop, or Tablet.":
+      "சிறந்த அனுபவத்திற்கு, டெஸ்க்டாப், லேப்டாப் அல்லது டேப்லெட்டில் 1920 × 1080 அல்லது அதற்கு மேற்பட்ட தெளிவுத்திறனுடன் Google Chrome, Microsoft Edge அல்லது Safari-ஐப் பயன்படுத்தவும்.",
+    "End this browser session only? Physical NFC shifts and automatic journeys are not ended.":
+      "இந்த உலாவி அமர்வை மட்டும் முடிக்கவா? நேரடி NFC ஷிப்டுகள் மற்றும் தானியங்கி பயணங்கள் நிறுத்தப்படாது.",
+    "Workspace unavailable": "பணியிடம் கிடைக்கவில்லை",
+    "Your current memberships and permissions do not grant this page.":
+      "உங்கள் தற்போதைய உறுப்பினர் மற்றும் அனுமதிகள் இந்தப் பக்கத்தை அணுக அனுமதிக்கவில்லை.",
+    "Open permitted workspace": "அனுமதிக்கப்பட்ட பணியிடத்தைத் திற",
+    "Paid operational access is inactive": "கட்டண செயல்பாட்டு அணுகல் செயலற்றது",
+    "Renew your subscription or contact an operator about suspension. Permitted billing/account pages remain available.":
+      "உங்கள் சந்தாவைப் புதுப்பிக்கவும் அல்லது இடைநிறுத்தம் குறித்து நிர்வாகியைத் தொடர்பு கொள்ளவும். அனுமதிக்கப்பட்ட பில்லிங்/கணக்கு பக்கங்கள் தொடர்ந்து கிடைக்கும்.",
+    "Open billing": "பில்லிங்கைத் திற",
+    "Page unavailable": "பக்கம் கிடைக்கவில்லை",
+
+    // AuthScreen.tsx
+    "FLEET OPERATIONS, CONNECTED": "இணைக்கப்பட்ட வாகனக் குழு செயல்பாடுகள்",
+    "One clear view.": "ஒரு தெளிவான பார்வை.",
+    "A better connected fleet.": "மேலும் சிறப்பாக இணைக்கப்பட்ட வாகனக் குழு.",
+    "Bring vehicles, drivers and day-to-day operations together — with the right information in the right hands.":
+      "வாகனங்கள், ஓட்டுநர்கள் மற்றும் அன்றாட செயல்பாடுகளை ஒன்றாக இணைத்து — சரியான தகவலை சரியான நபர்களிடம் சேர்க்கவும்.",
+    "Permission-aware workspaces": "அனுமதி அடிப்படையிலான பணியிடங்கள்",
+    "Vehicles, drivers and compliance in one place":
+      "வாகனங்கள், ஓட்டுநர்கள் மற்றும் இணக்கம் ஒரே இடத்தில்",
+    "Secure, single-use email sign-in":
+      "பாதுகாப்பான, ஒருமுறை மட்டுமே பயன்படுத்தக்கூடிய மின்னஞ்சல் உள்நுழைவு",
+    "Fleet · Drivers · Compliance · Managed devices":
+      "வாகனக் குழு · ஓட்டுநர்கள் · இணக்கம் · நிர்வகிக்கப்படும் சாதனங்கள்",
+    "WELCOME TO CARLINK": "CARLINK-க்கு வரவேற்கிறோம்",
+    "Confirm your organization": "உங்கள் அமைப்பை உறுதி செய்யவும்",
+    "Confirm your email to get started": "தொடங்க உங்கள் மின்னஞ்சலை உறுதி செய்யவும்",
+    "This link is missing or invalid. Request a fresh sign-in link.":
+      "இந்த இணைப்பு இல்லை அல்லது தவறானது. புதிய உள்நுழைவு இணைப்பைக் கோரவும்.",
+    "Sign in with the invited mailbox in a separate tab, then return here. The invitation is kept only in this tab's memory.":
+      "தனி தாவலில் அழைக்கப்பட்ட மின்னஞ்சலில் உள்நுழைந்து, பின்னர் இங்கே திரும்பவும். அழைப்பு இந்தத் தாவலின் நினைவகத்தில் மட்டுமே வைக்கப்பட்டுள்ளது.",
+    "Check sign-in status": "உள்நுழைவு நிலையைச் சரிபார்",
+    "Signed in as {email}. Accepting grants only the server-authorized invitation role.":
+      "{email} ஆக உள்நுழைந்துள்ளீர்கள். ஏற்பது சர்வர் அனுமதித்த அழைப்புப் பொறுப்பை மட்டுமே வழங்கும்.",
+    "Confirm the organization and plan reviewed in your signup email. Your invoice will be issued and secure payment will open in a new window. Unpaid organizations are permanently deleted after 12 hours.":
+      "உங்கள் பதிவு மின்னஞ்சலில் சரிபார்த்த அமைப்பு மற்றும் திட்டத்தை உறுதிப்படுத்தவும். உங்கள் விலைப்பட்டியல் வழங்கப்பட்டு பாதுகாப்பான கட்டணம் புதிய சாளரத்தில் திறக்கப்படும். கட்டணம் செலுத்தப்படாத அமைப்புகள் 12 மணி நேரத்திற்குப் பிறகு நிரந்தரமாக நீக்கப்படும்.",
+    "Confirm below to sign in securely. This link works once.":
+      "பாதுகாப்பாக உள்நுழைய கீழே உறுதிப்படுத்தவும். இந்த இணைப்பு ஒருமுறை மட்டுமே செயல்படும்.",
+    "Confirm & continue to payment": "உறுதிப்படுத்தி கட்டணத்திற்குச் செல்",
+    "Check your email": "உங்கள் மின்னஞ்சலைச் சரிபார்க்கவும்",
+    "If your account is eligible, a link will arrive shortly. It expires after 10 minutes and works once. Check your spam folder if needed.":
+      "உங்கள் கணக்கு தகுதியுடையதாக இருந்தால், இணைப்பு விரைவில் வரும். இது 10 நிமிடங்களில் காலாவதியாகும் மற்றும் ஒருமுறை மட்டுமே செயல்படும். தேவைப்பட்டால் ஸ்பேம் கோப்புறையைச் சரிபார்க்கவும்.",
+    "Confirming email creates an account identity, not an organization or a charge. You will choose and review your plan next.":
+      "மின்னஞ்சலை உறுதிப்படுத்துவது கணக்கு அடையாளத்தை மட்டுமே உருவாக்கும், அமைப்பையோ கட்டணத்தையோ அல்ல. அடுத்து உங்கள் திட்டத்தைத் தேர்ந்தெடுத்து சரிபார்ப்பீர்கள்.",
+    "Sign in securely by email — no password needed.":
+      "மின்னஞ்சல் மூலம் பாதுகாப்பாக உள்நுழையவும் — கடவுச்சொல் தேவையில்லை.",
+    "Back to CarLink": "CarLink-க்குத் திரும்பு",
+    "Secure API connection": "பாதுகாப்பான API இணைப்பு",
+
+    // CoordinateMap.tsx
+    "Ant Light": "வெளிச்சம்",
+    Standard: "இயல்பான",
+    Slate: "அடர் சாம்பல்",
+    Fit: "பொருத்து",
+    "Zoom in": "பெரிதாக்கு",
+    "Zoom out": "சிறிதாக்கு",
+    "Reset map": "வரைபடத்தை மீட்டமை",
+    "Map theme": "வரைபடத் தோற்றம்",
+    "Map pin legend": "வரைபடக் குறியீடு விளக்கம்",
+    "Interactive OpenStreetMap fleet coordinates":
+      "ஊடாடும் OpenStreetMap வாகன ஆயத்தொலைவுகள்",
+    "No observed coordinates in this window":
+      "இந்த நேரச் சாளரத்தில் ஆயத்தொலைவுகள் எதுவும் இல்லை",
+    "Freshness unknown": "புதுமை நிலை தெரியவில்லை",
+    "Telemetry gap ({seconds}s)": "தொலை அளவியல் இடைவெளி ({seconds}வி)",
+    "Signal: {value} dBm ({band})": "சிக்னல்: {value} dBm ({band})",
+    "Signal unknown": "சிக்னல் தெரியவில்லை",
+    "Speed: {value} km/h": "வேகம்: {value} km/h",
+    "Speed unknown": "வேகம் தெரியவில்லை",
+    "Danger driving event": "ஆபத்தான ஓட்டுநர் நிகழ்வு",
+    Start: "தொடக்கம்",
+    Latest: "சமீபத்தியது",
+    "Inspect vehicle": "வாகனத்தை ஆய்வு செய்",
+    "Accel: {value} m/s²": "முடுக்கம்: {value} m/s²",
+    " (thresh {value} m/s²)": " (வரம்பு {value} m/s²)",
+    "Detector: {sources}": "கண்டறிதல்: {sources}",
+    Operator: "நெட்வொர்க் வழங்குநர்",
+    RSRP: "RSRP",
+    SINR: "SINR",
+    Coords: "ஆயத்தொலைவு",
+    Observed: "கவனிக்கப்பட்ட நேரம்",
+    "Fault code": "பிழைக் குறியீடு",
+    "Route start": "பயணத் தொடக்கம்",
+    "Latest point": "சமீபத்திய இடம்",
+    Speed: "வேகம்",
+    "Engine RPM": "இயந்திர RPM",
+    "Driver: {name}": "ஓட்டுநர்: {name}",
+    "No active driver": "செயலில் ஓட்டுநர் இல்லை",
+    "Current driver": "தற்போதைய ஓட்டுநர்",
+    current_driver_name: "தற்போதைய ஓட்டுநர்",
+    current_vehicle_registration: "தற்போதைய வாகனம்",
+    registration_number: "வாகனப் பதிவு எண்",
+    "{plotted} plotted / {loaded} loaded · OpenStreetMap basemap (zoom {zoom}x) · Missing packets are not dead zones.":
+      "{plotted} குறிக்கப்பட்டது / {loaded} ஏற்றப்பட்டது · OpenStreetMap அடிப்படை வரைபடம் (பெரிதாக்கம் {zoom}x) · விடுபட்ட பொதிகள் சிக்னல் இல்லாத பகுதிகள் அல்ல.",
+    "Latitude {minLat}–{maxLat} · Longitude {minLon}–{maxLon}":
+      "அட்சரேகை {minLat}–{maxLat} · தீர்க்கரேகை {minLon}–{maxLon}",
+    "Unknown signal": "தெரியாத சிக்னல்",
+    "Gap (> 120s)": "இடைவெளி (> 120வி)",
+    "Harsh braking": "கடுமையான பிரேக்",
+    "Harsh acceleration": "கடுமையான முடுக்கம்",
+    "Sharp cornering": "கூர்மையான திருப்பம்",
+    "Unknown speed": "தெரியாத வேகம்",
+    "Recent packet": "சமீபத்திய பொதி",
+    "Stale observation": "பழைய கவனிப்பு",
+    "Active fault code": "செயலில் உள்ள பிழைக் குறியீடு",
+    "IMU (5 Hz)": "IMU (5 Hz)",
+    "Server speed Δ": "சர்வர் வேக Δ",
+    "0–9 km/h (Crawl / Stopped)": "0–9 km/h (மெதுவான / நின்ற நிலை)",
+    "10–34 km/h (Slow urban)": "10–34 km/h (மெதுவான நகரம்)",
+    "35–59 km/h (Cruising)": "35–59 km/h (சீரான ஓட்டம்)",
+    "60–79 km/h (Brisk)": "60–79 km/h (விரைவானது)",
+    "80–99 km/h (Fast)": "80–99 km/h (வேகமானது)",
+    "100+ km/h (High speed)": "100+ km/h (அதிவேகம்)",
+    "Excellent (≥ -85 dBm)": "சிறந்தது (≥ -85 dBm)",
+    "Good (-85 to -95 dBm)": "நல்லது (-85 முதல் -95 dBm)",
+    "Fair (-95 to -105 dBm)": "நடுத்தரம் (-95 முதல் -105 dBm)",
+    "Weak (-105 to -115 dBm)": "பலவீனம் (-105 முதல் -115 dBm)",
+    "Very weak (< -115 dBm)": "மிக பலவீனம் (< -115 dBm)",
+
+    // shared.tsx
+    "error.0": "உங்கள் இணைய இணைப்பு மற்றும் பின்தள CORS அமைப்பைச் சரிபார்க்கவும்.",
+    "error.401":
+      "உங்கள் அமர்வு காலாவதியானது. புதிய மின்னஞ்சல் இணைப்பைப் பயன்படுத்தி உள்நுழையவும்.",
+    "error.402":
+      "செயல்பாட்டு அணுகலுக்கு செயலில் உள்ள கட்டணச் சந்தா தேவை. பில்லிங் மற்றும் அனுமதிக்கப்பட்ட கணக்கு நிர்வாகம் தொடர்ந்து கிடைக்கும்.",
+    "error.403":
+      "தற்போதைய அனுமதிகள், வாங்கிய அம்சங்கள் அல்லது சமீபத்திய மின்னஞ்சல் சரிபார்ப்பால் இந்தச் செயல் கட்டுப்படுத்தப்பட்டுள்ளது. அணுகலைப் புதுப்பிக்கவும் அல்லது புதிய உள்நுழைவு இணைப்பைக் கோரவும்.",
+    "error.404":
+      "இந்தப் பதிவு கிடைக்கவில்லை அல்லது உங்கள் தற்போதைய பணியிடத்தில் அணுக முடியாதது.",
+    "error.409":
+      "பதிவு அல்லது அதன் பதிப்பு மாற்றப்பட்டுள்ளது. தற்போதைய நிலையைப் புதுப்பித்து, மீண்டும் சமர்ப்பிக்கும் முன் உங்கள் மாற்றங்களைச் சரிபார்க்கவும்.",
+    "error.410":
+      "பதிவு அல்லது கட்டணக் காலக்கெடு முடிந்துவிட்டது. பழைய கட்டண இணைப்பில் பணம் செலுத்த வேண்டாம். பதிவு நிலையைச் சரிபார்க்கவும் அல்லது தாமதமான கட்டணச் சரிபார்ப்பிற்கு நிர்வாகியைத் தொடர்பு கொள்ளவும்.",
+    "error.413":
+      "பதிவேற்றம் மிகவும் பெரியது. ஆவணங்கள்: அதிகபட்சம் 10 MiB. புகைப்படங்கள்: அதிகபட்சம் 2 MiB.",
+    "error.415":
+      "ஆதரிக்கப்படும் JSON கோரிக்கைகள் மற்றும் JPEG, PNG அல்லது PDF இணைப்புகள் மட்டுமே ஏற்கப்படும்.",
+    "error.419":
+      "CSRF துவக்கம் தேவை. HTTPS, பகிரப்பட்ட XSRF-TOKEN குக்கீ டொமைன் மற்றும் Sanctum மூலங்களைச் சரிபார்த்து, பின்னர் மீண்டும் சமர்ப்பிக்கவும்.",
+    "error.422":
+      "முன்னிலைப்படுத்தப்பட்ட புலங்களையும் செயல் தேவைகளையும் சரிபார்க்கவும். உங்கள் வரைவு பாதுகாக்கப்பட்டுள்ளது.",
+    "error.429":
+      "அதிகப்படியான கோரிக்கைகள். மீண்டும் முயற்சிக்கும் முன் காத்திருக்கவும்; தானியங்கி புதுப்பிப்பு நிறுத்தப்பட்டது.",
+    "error.502":
+      "API சர்வர் அல்லது அதன் மேல்நிலை HTTP 502-ஐ திருப்பியது. அந்த சர்வர் பதிலை ஆராய கோரிக்கை குறிப்பைப் பயன்படுத்தவும்.",
+    "error.503":
+      "பின்தளச் சார்பு கிடைக்கவில்லை. கோரிக்கை குறிப்பைப் பயன்படுத்தி நிர்வாகியைத் தொடர்பு கொள்ளவும்.",
+    "Outcome uncertain — reconcile before retrying":
+      "முடிவு உறுதியற்றது — மீண்டும் முயற்சிக்கும் முன் சரிபார்க்கவும்",
+    "API response format mismatch": "API பதில் வடிவம் பொருந்தவில்லை",
+    "Request could not complete ({status})":
+      "கோரிக்கையை முடிக்க முடியவில்லை ({status})",
+    "API unavailable": "API கிடைக்கவில்லை",
+    "The operation may have committed even though the response failed. Refresh the affected record before making another submission.":
+      "பதில் தோல்வியுற்றாலும் செயல்பாடு பதிவாகியிருக்கலாம். மற்றொரு சமர்ப்பிப்பைச் செய்வதற்கு முன் பாதிக்கப்பட்ட பதிவைப் புதுப்பிக்கவும்.",
+    "The server returned HTTP {status}, but this frontend could not read the expected response format. {issue}":
+      "சர்வர் HTTP {status}-ஐ வழங்கியது, ஆனால் எதிர்பார்த்த பதில் வடிவத்தை இந்த முன்பக்கம் படிக்க முடியவில்லை. {issue}",
+    "The request failed. Refresh the record or contact an operator.":
+      "கோரிக்கை தோல்வியடைந்தது. பதிவைப் புதுப்பிக்கவும் அல்லது நிர்வாகியைத் தொடர்பு கொள்ளவும்.",
+    "Endpoint: {path}": "இறுதிப்புள்ளி: {path}",
+    "Request ID: {requestId}": "கோரிக்கை ID: {requestId}",
+    "Retry after {seconds} seconds.":
+      "{seconds} வினாடிகளுக்குப் பிறகு மீண்டும் முயற்சிக்கவும்.",
+    "Refresh state": "நிலையைப் புதுப்பி",
+    "{count} items": "{count} உருப்படிகள்",
+    "Sort by date": "தேதி வாரியாக வரிசைப்படுத்து",
+    "Newest first (recent)": "புதியது முதலில் (சமீபத்தியது)",
+    "Oldest first": "பழையது முதலில்",
+    "Last successful result — refresh failed":
+      "கடைசி வெற்றிகரமான முடிவு — புதுப்பிப்பு தோல்வி",
+    "Scroll the table horizontally for more columns.":
+      "மேலும் நெடுவரிசைகளைப் பார்க்க அட்டவணையை கிடைமட்டமாக நகர்த்தவும்.",
+    "Scroll the table horizontally for more columns and actions.":
+      "மேலும் நெடுவரிசைகள் மற்றும் செயல்களைப் பார்க்க அட்டவணையை கிடைமட்டமாக நகர்த்தவும்.",
+    "{count} returned": "{count} திரும்பப் பெறப்பட்டன",
+    "{count} returned on this capped page":
+      "இந்த வரம்புக்குட்பட்ட பக்கத்தில் {count} திரும்பப் பெறப்பட்டன",
+    "Server-limited list; no full-fleet total is available.":
+      "சர்வர் வரம்புக்குட்பட்ட பட்டியல்; முழு வாகனக் குழு எண்ணிக்கை கிடைக்கவில்லை.",
+    "Last 1 hour": "கடந்த 1 மணி நேரம்",
+    "Last 6 hours": "கடந்த 6 மணி நேரம்",
+    "Last 24 hours": "கடந்த 24 மணி நேரம்",
+    "Last 7 days": "கடந்த 7 நாட்கள்",
+    "Last 30 days": "கடந்த 30 நாட்கள்",
+    "Choose an increasing range within the allowed window.":
+      "அனுமதிக்கப்பட்ட சாளரத்திற்குள் சரியான தொடக்க-முடிவு வரம்பைத் தேர்ந்தெடுக்கவும்.",
+    "24 hours": "24 மணி நேரம்",
+    "{days} days": "{days} நாட்கள்",
+    "Maximum {limit} · Your account timezone":
+      "அதிகபட்சம் {limit} · உங்கள் கணக்கு நேரமண்டலம்",
+
+    // workflow.tsx
+    "Current server version. Refresh after every successful change.":
+      "தற்போதைய சர்வர் பதிப்பு. வெற்றிகரமான ஒவ்வொரு மாற்றத்திற்குப் பிறகும் புதுப்பிக்கவும்.",
+    "Select an authorized record": "அனுமதிக்கப்பட்ட பதிவைத் தேர்ந்தெடுக்கவும்",
+    "Load next page": "அடுத்த பக்கத்தை ஏற்று",
+    "Threshold key": "வரம்பு விசை",
+    "Unique key": "தனித்துவ விசை",
+    "Threshold severity": "வரம்பு தீவிர நிலை",
+    "Remaining kilometres": "மீதமுள்ள கிலோமீட்டர்கள்",
+    "Remaining km ≤": "மீதமுள்ள கி.மீ ≤",
+    "Remaining days": "மீதமுள்ள நாட்கள்",
+    "Remaining days ≤": "மீதமுள்ள நாட்கள் ≤",
+    "Threshold matching": "வரம்பு பொருத்தம்",
+    "Threshold channels": "அறிவிப்பு வழிகள்",
+    "Remove threshold": "வரம்பை நீக்கு",
+    "Add threshold": "வரம்பைச் சேர்",
+    "This field is required.": "இந்தப் புலம் தேவை.",
+    "Enter the expected format.": "எதிர்பார்க்கப்படும் வடிவத்தில் உள்ளிடவும்.",
+    "Explicit acknowledgment is required.": "தெளிவான ஒப்புதல் தேவை.",
+    "Use an ISO timestamp with a timezone offset.":
+      "நேரமண்டல ஈடுசெய்தலுடன் கூடிய ISO நேர முத்திரையைப் பயன்படுத்தவும்.",
+    "Submit this change to the server? Current authorization and business rules will be checked.":
+      "இந்த மாற்றத்தை சர்வரில் சமர்ப்பிக்கவா? தற்போதைய அனுமதி மற்றும் வணிக விதிகள் சரிபார்க்கப்படும்.",
+    "Review current server state": "தற்போதைய சர்வர் நிலையைச் சரிபார்",
+    "Your proposed fields are preserved. Review this server state before using its current version.":
+      "நீங்கள் உள்ளிட்ட தகவல்கள் பாதுகாக்கப்பட்டுள்ளன. தற்போதைய பதிப்பைப் பயன்படுத்தும் முன் இந்த சர்வர் நிலையைச் சரிபார்க்கவும்.",
+    "Use fetched version with my draft": "பெறப்பட்ட பதிப்பை என் வரைவுடன் பயன்படுத்து",
+    "Only the unchanged draft can be retried with the same idempotency key. Reconcile before editing or starting a new operation.":
+      "மாற்றப்படாத வரைவை மட்டுமே அதே idempotency விசையுடன் மீண்டும் முயற்சிக்க முடியும். திருத்துவதற்கு முன் அல்லது புதிய செயல்பாட்டைத் தொடங்கும் முன் சரிபார்க்கவும்.",
+    "Reconcile this outcome before closing and starting a replacement operation.":
+      "மூடுவதற்கும் மாற்றுச் செயல்பாட்டைத் தொடங்குவதற்கும் முன் இந்த முடிவைச் சரிபார்க்கவும்.",
+    "Accepted/queued is not proof of completion.":
+      "ஏற்கப்பட்டது/வரிசையில் உள்ளது என்பது முடிந்ததற்கான ஆதாரம் அல்ல.",
+    "Confirm this server action. It cannot be automatically retried.":
+      "இந்த சர்வர் செயலை உறுதிப்படுத்தவா? இதை தானாக மீண்டும் முயற்சிக்க முடியாது.",
+    "Accepted/queued — completion is not yet confirmed.":
+      "ஏற்கப்பட்டது/வரிசையில் உள்ளது — நிறைவு இன்னும் உறுதிப்படுத்தப்படவில்லை.",
+    "channel:info": "தகவல்",
+    "channel:warning": "எச்சரிக்கை",
+    "channel:high": "அதிகம்",
+    "channel:critical": "மிக முக்கியம்",
+    "channel:any": "ஏதேனும் ஒன்று",
+    "channel:all": "அனைத்தும்",
+    "channel:in_app": "செயலியில்",
+    "channel:email": "மின்னஞ்சல்",
+
+    // Technical field labels
+    rateLph: "மணிக்கு எரிபொருள் லிட்டர் (L/h)",
+    mil_on: "இயந்திர சோதனை விளக்கு (MIL)",
+    has_dtc_fault: "கண்டறிதல் சிக்கல் குறியீடு (DTC) பிழை",
+    dtc_codes: "கண்டறிதல் சிக்கல் குறியீடுகள் (DTC)",
+    engine_rpm: "இயந்திர RPM",
+    coolant_temp_c: "குளிரூட்டி வெப்பநிலை (°C)",
+    battery_voltage: "மின்கல மின்னழுத்தம் (V)",
+    fuel_level_pct: "எரிபொருள் அளவு (%)",
+    odometer_km: "ஓடோமீட்டர் (km)",
+    harsh_braking: "கடுமையான பிரேக்",
+    rapid_acceleration: "கடுமையான முடுக்கம்",
+    sharp_cornering: "கூர்மையான திருப்பம்",
+    reconciliation_required: "சரிபார்ப்பு தேவை",
+
+    // Coded technical values
+    "val:maf": "நிறை காற்று ஓட்ட (MAF) மதிப்பீடு",
+    "val:direct": "நேரடி OBD எரிபொருள் வீதம்",
+    "val:maf_petrol_estimate": "MAF பெட்ரோல் மதிப்பீடு",
+    "val:direct_packet_snapshot": "நேரடி தரவு பொதி நிலை",
+    "val:packet_snapshot": "தரவு பொதி நிலை",
+    "val:reported_fix": "தெரிவிக்கப்பட்ட சரிசெய்தல்",
+    "val:unusable": "பயன்படுத்த முடியாதது",
+    "val:unreported": "அறிவிக்கப்படாதது",
+    "val:unverified_edge_claim": "சரிபார்க்கப்படாத சாதனக் கூற்று",
+    "val:pi_snapshot_v1": "சாதன நிலைப் பதிவு (v1)",
+    "val:canonical_v1": "தரநிலை தொலை அளவியல் (v1)",
+    "val:telemetry_gap": "தொலை அளவியல் இடைவெளி",
+    "val:automatic_end": "தானியங்கி முடிவு",
+    "val:stationary_engine_off": "நிறுத்தப்பட்டது (இயந்திரம் அணைப்பு)",
+    "val:stationary_engine_unknown": "நிறுத்தப்பட்டது (இயந்திர நிலை தெரியவில்லை)",
+    "val:not_implemented": "செயல்படுத்தப்படவில்லை",
+    "val:uncalibrated_speed_difference": "அளவீடு செய்யப்படாத வேக வேறுபாடு",
+    "val:odometer_reported": "ஓடோமீட்டர் அறிவித்தது",
+    "val:gps_estimated": "GPS மதிப்பீடு",
+    "val:speed_trapezoid": "வேக சரிவகக் கணக்கீடு",
+    "val:speed_estimated": "வேக மதிப்பீடு",
+    "val:gps_coordinates": "GPS ஆயத்தொலைவுகள்",
+    "val:normal": "இயல்பானது",
+    "val:harsh_braking": "கடுமையான பிரேக்",
+    "val:rapid_acceleration": "கடுமையான முடுக்கம்",
+    "val:harsh_acceleration": "கடுமையான முடுக்கம்",
+    "val:sharp_cornering": "கூர்மையான திருப்பம்",
+    "= {metres} sent to server": "= {metres} சேவையகத்திற்கு அனுப்பப்படும்",
+    "= {minor} minor units sent to server":
+      "= {minor} சிறிய அலகுகள் சேவையகத்திற்கு அனுப்பப்படும்",
+  },
+};
+
+export function coreText(
+  locale: Locale,
+  key: string,
+  t?: (k: string) => string,
+  vars?: Record<string, string | number>,
+): string {
+  let out = CORE_PHRASES[locale]?.[key];
+  if (!out && t) {
+    const translated = t(key);
+    if (translated !== key) out = translated;
+  }
+  if (!out) out = CORE_PHRASES.en[key] ?? (t ? t(key) : key);
+  if (vars) {
+    for (const [varKey, val] of Object.entries(vars)) {
+      out = out.replaceAll(`{${varKey}}`, String(val));
+    }
+  }
+  return out;
+}
