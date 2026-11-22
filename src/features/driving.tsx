@@ -41,6 +41,7 @@ import {
   GeminiPoweredBadge,
   PageTitle,
   Snapshot,
+  Status,
   Time,
   TimeWindow,
   useData,
@@ -1783,19 +1784,22 @@ export function DriverDetail({ id }: { id: string }) {
 export function Assignments() {
   const app = useApp(),
     navigate = useNavigate(),
+    { pollMs } = useTelemetryRefreshMs(true),
     [assignmentPoints, setAssignmentPoints] = useState<Row[]>([]),
     onData = useCallback((items: Row[]) => setAssignmentPoints(items), []);
   return (
     <div className="stack">
       <PageTitle
-        title={app.t("Current driver assignments")}
+        title={app.t("Current assignments")}
         subtitle={app.t(
-          "Locations require currently accepted active NFC shifts; old observations are not live GPS.",
+          "Locations require currently authorized NFC shifts; old observations are not live GPS.",
         )}
       />
       <Card title={app.t("Active shift coordinates")}>
         <CoordinateMap
           items={assignmentPoints}
+          mode="fleet"
+          inspectLabel={app.t("Driver details")}
           onSelect={(row) =>
             navigate(`/organization/${app.organizationId}/drivers/${row.id}`)
           }
@@ -1804,6 +1808,7 @@ export function Assignments() {
       <Directory
         path={orgPath(app.organizationId, "/driver-assignments")}
         query={{ per_page: 100 }}
+        poll={pollMs}
         fields={[
           "name",
           "status",
@@ -1811,19 +1816,75 @@ export function Assignments() {
           "make",
           "model",
           "speed_kmh",
+          "freshness",
+          "dtc_codes",
           "shift_started_at",
           "occurred_at",
         ]}
+        render={{
+          registration_number: (v) =>
+            text(v) ? (
+              <Tag color="blue">{text(v)}</Tag>
+            ) : (
+              <span className="muted">{app.t("Off shift")}</span>
+            ),
+          make: (v) => (text(v) ? text(v) : <span className="muted">—</span>),
+          model: (v) => (text(v) ? text(v) : <span className="muted">—</span>),
+          speed_kmh: (v) =>
+            v !== null && v !== undefined && text(v) !== "" ? (
+              `${Number(v).toFixed(1)} km/h`
+            ) : (
+              <span className="muted">—</span>
+            ),
+          freshness: (v, row) =>
+            text(v) ? (
+              <Status value={v} />
+            ) : row.registration_number ? (
+              <Status value="never_observed" />
+            ) : (
+              <span className="muted">—</span>
+            ),
+          dtc_codes: (v) =>
+            Array.isArray(v) && v.length > 0 ? (
+              <Space size={[4, 4]} wrap>
+                {v.map((c, idx) => (
+                  <Tag color="error" key={idx}>
+                    {text(c)}
+                  </Tag>
+                ))}
+              </Space>
+            ) : (
+              <span className="muted">—</span>
+            ),
+          shift_started_at: (v) =>
+            v ? <Time value={v} /> : <span className="muted">—</span>,
+          occurred_at: (v) =>
+            v ? <Time value={v} /> : <span className="muted">—</span>,
+        }}
         onData={onData}
         action={(row) => (
-          <Button
-            size="small"
-            onClick={() =>
-              navigate(`/organization/${app.organizationId}/drivers/${row.id}`)
-            }
-          >
-            {app.t("Driver details")}
-          </Button>
+          <Space size={4} wrap>
+            <Button
+              size="small"
+              onClick={() =>
+                navigate(`/organization/${app.organizationId}/drivers/${row.id}`)
+              }
+            >
+              {app.t("Driver details")}
+            </Button>
+            {text(row.vehicle_id) && (
+              <Button
+                size="small"
+                onClick={() =>
+                  navigate(
+                    `/organization/${app.organizationId}/vehicles/${row.vehicle_id}`,
+                  )
+                }
+              >
+                {app.t("Open vehicle")}
+              </Button>
+            )}
+          </Space>
         )}
       />
     </div>

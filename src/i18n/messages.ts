@@ -124,6 +124,10 @@ const baseMessages: Record<Locale, Record<string, string>> = {
     role_code: "Role",
     permissions: "Permissions",
     driving_events: "Harsh braking / accel",
+    "Current assignments": "Current assignments",
+    assignments: "Current assignments",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "Locations require currently authorized NFC shifts; old observations are not live GPS.",
   },
   ms: {
     dashboard: "Gambaran armada",
@@ -239,6 +243,10 @@ const baseMessages: Record<Locale, Record<string, string>> = {
     role_code: "Peranan",
     permissions: "Kebenaran",
     driving_events: "Brek keras / pecutan",
+    "Current assignments": "Tugasan semasa",
+    assignments: "Tugasan semasa",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "Lokasi memerlukan syif NFC aktif yang dibenarkan; pemerhatian lama bukan GPS langsung.",
   },
   zh: {
     dashboard: "车队概览",
@@ -354,6 +362,10 @@ const baseMessages: Record<Locale, Record<string, string>> = {
     role_code: "角色",
     permissions: "权限",
     driving_events: "急刹车 / 急加速",
+    "Current assignments": "当前驾驶员分配",
+    assignments: "当前驾驶员分配",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "位置需基于当前已授权的活动 NFC 班次；历史观测数据并非实时 GPS。",
   },
   ta: {
     dashboard: "கப்பற்படை மேலோட்டம்",
@@ -469,6 +481,10 @@ const baseMessages: Record<Locale, Record<string, string>> = {
     role_code: "பங்கு",
     permissions: "அனுமதிகள்",
     driving_events: "கடுமையான பிரேக் / முடுக்கம்",
+    "Current assignments": "தற்போதைய ஒதுக்கீடுகள்",
+    assignments: "தற்போதைய ஒதுக்கீடுகள்",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "இருப்பிடங்களுக்கு தற்போது அங்கீகரிக்கப்பட்ட செயலில் உள்ள NFC ஷிப்டுகள் தேவை; பழைய பதிவுகள் நேரடி GPS அல்ல.",
   },
 };
 

@@ -376,6 +376,20 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
     "= {metres} sent to server": "= {metres} sent to server",
     "= {minor} minor units sent to server":
       "= {minor} minor units sent to server",
+    "Current assignments": "Current assignments",
+    assignments: "Current assignments",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "Locations require currently authorized NFC shifts; old observations are not live GPS.",
+    make: "Make",
+    model: "Model",
+    shift_started_at: "Shift started",
+    occurred_at: "Occurred at",
+    speed_kmh: "Speed (km/h)",
+    has_fault_code: "Active fault code",
+    "Off shift": "Off shift",
+    "Open vehicle": "Open vehicle",
+    "Driver details": "Driver details",
+    "Never observed": "Never observed",
   },
   ms: {
     // Core labels & booleans
@@ -752,6 +766,20 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
     "= {metres} sent to server": "= {metres} dihantar ke pelayan",
     "= {minor} minor units sent to server":
       "= {minor} unit minor dihantar ke pelayan",
+    "Current assignments": "Tugasan semasa",
+    assignments: "Tugasan semasa",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "Lokasi memerlukan syif NFC aktif yang dibenarkan; pemerhatian lama bukan GPS langsung.",
+    make: "Jenama",
+    model: "Model",
+    shift_started_at: "Syif bermula",
+    occurred_at: "Berlaku pada",
+    speed_kmh: "Kelajuan (km/j)",
+    has_fault_code: "Kod kerosakan aktif",
+    "Off shift": "Luar syif",
+    "Open vehicle": "Buka kenderaan",
+    "Driver details": "Butiran pemandu",
+    "Never observed": "Belum diperhatikan",
   },
   zh: {
     // Core labels & booleans
@@ -1115,6 +1143,20 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
     "= {metres} sent to server": "= {metres}（将提交至服务器）",
     "= {minor} minor units sent to server":
       "= {minor} 最小单位（将提交至服务器）",
+    "Current assignments": "当前驾驶员分配",
+    assignments: "当前驾驶员分配",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "位置需基于当前已授权的活动 NFC 班次；历史观测数据并非实时 GPS。",
+    make: "品牌",
+    model: "型号",
+    shift_started_at: "班次开始时间",
+    occurred_at: "发生时间",
+    speed_kmh: "速度 (km/h)",
+    has_fault_code: "当前故障码",
+    "Off shift": "未在班次中",
+    "Open vehicle": "打开车辆",
+    "Driver details": "驾驶员详情",
+    "Never observed": "尚未观察",
   },
   ta: {
     // Core labels & booleans
@@ -1493,6 +1535,20 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
     "= {metres} sent to server": "= {metres} சேவையகத்திற்கு அனுப்பப்படும்",
     "= {minor} minor units sent to server":
       "= {minor} சிறிய அலகுகள் சேவையகத்திற்கு அனுப்பப்படும்",
+    "Current assignments": "தற்போதைய ஒதுக்கீடுகள்",
+    assignments: "தற்போதைய ஒதுக்கீடுகள்",
+    "Locations require currently authorized NFC shifts; old observations are not live GPS.":
+      "இருப்பிடங்களுக்கு தற்போது அங்கீகரிக்கப்பட்ட செயலில் உள்ள NFC ஷிப்டுகள் தேவை; பழைய பதிவுகள் நேரடி GPS அல்ல.",
+    make: "தயாரிப்பு நிறுவனம்",
+    model: "மாடல்",
+    shift_started_at: "பணி தொடங்கிய நேரம்",
+    occurred_at: "நிகழ்ந்த நேரம்",
+    speed_kmh: "வேகம் (கி.மீ/மணி)",
+    has_fault_code: "செயலில் உள்ள பிழைக் குறியீடு",
+    "Off shift": "ஷிப்டில் இல்லை",
+    "Open vehicle": "வாகனத்தைத் திற",
+    "Driver details": "ஓட்டுநர் விவரங்கள்",
+    "Never observed": "இதுவரை கவனிக்கப்படவில்லை",
   },
 };
 

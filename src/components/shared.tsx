@@ -377,7 +377,7 @@ export function Time({ value }: { value: unknown }) {
   );
 }
 const secretKeys =
-  /auth_token|token_hash|credential_fingerprint|photo_path|signature|payment_url|callback|content_base64|storage_key|dtc_codes|possible_solution/i;
+  /auth_token|token_hash|credential_fingerprint|photo_path|signature|payment_url|callback|content_base64|storage_key|possible_solution/i;
 
 function summarizeCompactValue(
   value: unknown,
@@ -583,7 +583,20 @@ export function Details({
             ) : (
               translated
             ),
-            children: Array.isArray(value) ? (
+            children:
+              key === "dtc_codes" && Array.isArray(value) ? (
+                value.length > 0 ? (
+                  <Space size={[4, 4]} wrap>
+                    {value.map((code, i) => (
+                      <Tag color="error" key={i}>
+                        {text(code)}
+                      </Tag>
+                    ))}
+                  </Space>
+                ) : (
+                  <span className="muted">{ct("None")}</span>
+                )
+              ) : Array.isArray(value) ? (
               <Space orientation="vertical">
                 {value.map((v, i) => (
                   <div key={i}>

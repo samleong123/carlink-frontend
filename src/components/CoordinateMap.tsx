@@ -37,10 +37,20 @@ export function coordinates(items: Row[]) {
 function fleetFreshnessLabel(
   value: unknown,
   ct: (key: string) => string,
+  occurredAt?: unknown,
 ): string {
   const key = text(value);
   if (key === "recent_packet") return ct("Recent packet");
   if (key === "stale") return ct("Stale observation");
+  if (key === "never_observed") return ct("Never observed");
+  if (!key && occurredAt) {
+    const ts = Date.parse(text(occurredAt));
+    if (Number.isFinite(ts)) {
+      return Date.now() - ts <= 180_000
+        ? ct("Recent packet")
+        : ct("Stale observation");
+    }
+  }
   return key || ct("Freshness unknown");
 }
 
@@ -82,6 +92,7 @@ export function CoordinateMap({
   mode,
   focusRowKey,
   focusNonce,
+  inspectLabel,
 }: {
   items: Row[];
   onSelect?: (row: Row) => void;
@@ -89,6 +100,7 @@ export function CoordinateMap({
   mode?: CoordinateMapMode;
   focusRowKey?: string | null;
   focusNonce?: number;
+  inspectLabel?: string;
 }) {
   const { session, locale, t } = useApp();
   const ct = useCallback(
@@ -406,6 +418,13 @@ export function CoordinateMap({
       let icon: LeafletNs.DivIcon;
       let zIndexOffset = isEndpoint ? 200 : 0;
 
+      const effectiveFreshness =
+        text(row.freshness) ||
+        (Number.isFinite(Date.parse(text(row.occurred_at))) &&
+        Date.now() - Date.parse(text(row.occurred_at)) <= 180_000
+          ? "recent_packet"
+          : "stale");
+
       if (safety.hasDangerEvent) {
         const badgeLabel = safetyTitle || ct("Danger driving event");
         icon = L.divIcon({
@@ -431,7 +450,7 @@ export function CoordinateMap({
         });
       } else {
         const pinClass =
-          `carlink-pin ${row.freshness === "stale" ? "stale" : "recent"} ${row.has_fault_code === true ? "fault" : ""}`.trim();
+          `carlink-pin ${effectiveFreshness === "stale" ? "stale" : "recent"} ${row.has_fault_code === true ? "fault" : ""}`.trim();
         icon = L.divIcon({
           className: "carlink-div-icon",
           html: `<span class="${pinClass}" aria-label="${escapeHtml(plate)}">●</span>`,
@@ -449,7 +468,11 @@ export function CoordinateMap({
 
       markersByKeyRef.current.set(rowPointKey(row), marker);
 
-      const driverName = text(row.current_driver_name);
+      const driverName = text(
+        row.current_driver_name ||
+          row.driver_name ||
+          (row.vehicle_id || row.registration_number ? row.name : ""),
+      );
       const endpointLabel = isStart
         ? `${ct("Start")} · `
         : isLatest
@@ -473,7 +496,7 @@ export function CoordinateMap({
       const origIndex = validRef.current.indexOf(row);
       const inspectBtn =
         onSelectRef.current && origIndex >= 0
-          ? `<div class="carlink-popup-actions"><button type="button" class="carlink-popup-btn" data-inspect-index="${origIndex}">${escapeHtml(ct("Inspect vehicle"))} &rarr;</button></div>`
+          ? `<div class="carlink-popup-actions"><button type="button" class="carlink-popup-btn" data-inspect-index="${origIndex}">${escapeHtml(inspectLabel || ct("Inspect vehicle"))} &rarr;</button></div>`
           : "";
 
       const localizedSources = safety.sources.map((src) => ct(src));
@@ -484,6 +507,14 @@ export function CoordinateMap({
             ${localizedSources.length ? `<div>${escapeHtml(ct("Detector: {sources}", { sources: localizedSources.join(" + ") }))}</div>` : ""}
           </div>`
         : "";
+
+      const dtcCodes = Array.isArray(row.dtc_codes)
+        ? row.dtc_codes.map((c) => text(c)).filter(Boolean)
+        : [];
+      const dtcPopupRow =
+        dtcCodes.length > 0
+          ? `<div class="carlink-popup-row"><span>${escapeHtml(ct("DTC"))}</span><span class="mono" style="color:#dc2626;font-weight:600">${escapeHtml(dtcCodes.join(", "))}</span></div>`
+          : "";
 
       const popupHtml =
         resolvedMode === "coverage"
@@ -503,7 +534,7 @@ export function CoordinateMap({
                 <span class="carlink-popup-tag ${
                   safety.hasDangerEvent || row.has_fault_code === true
                     ? "error"
-                    : row.freshness === "stale"
+                    : effectiveFreshness === "stale"
                       ? "warn"
                       : "ok"
                 }">${escapeHtml(
@@ -517,10 +548,11 @@ export function CoordinateMap({
                           ? ct("Latest point")
                           : resolvedMode === "route"
                             ? speedColor(speedNum).shortLabel + " km/h"
-                            : fleetFreshnessLabel(row.freshness, ct),
+                            : fleetFreshnessLabel(row.freshness, ct, row.occurred_at),
                 )}</span>
               </div>
               ${dangerPopupBlock}
+              ${dtcPopupRow}
               <div class="carlink-popup-row"><span>${escapeHtml(ct("Speed"))}</span><span>${speedNum === null ? escapeHtml(ct("Unknown")) : `${escapeHtml(speedNum)} km/h`}</span></div>
               ${resolvedMode === "fleet" || driverName ? `<div class="carlink-popup-row"><span>${escapeHtml(ct("Current driver"))}</span><span>${driverName ? escapeHtml(driverName) : escapeHtml(ct("No active driver"))}</span></div>` : ""}
               ${rpmNum !== null ? `<div class="carlink-popup-row"><span>${escapeHtml(ct("Engine RPM"))}</span><span>${escapeHtml(rpmNum)} rpm</span></div>` : ""}
@@ -539,7 +571,7 @@ export function CoordinateMap({
       lastBoundsKeyRef.current = boundsInfo.key;
       fitAll(false);
     }
-  }, [leafletReady, valid, boundsInfo, resolvedMode, timezone, fitAll, ct]);
+  }, [leafletReady, valid, boundsInfo, resolvedMode, timezone, fitAll, ct, inspectLabel]);
 
   useEffect(() => {
     const map = mapRef.current;

@@ -7,6 +7,8 @@ import {
   Checkbox,
   Form,
   Input,
+  Space,
+  Tag,
   Typography,
 } from "antd";
 import { api, orgPath, segment } from "../api/client";
@@ -99,6 +101,10 @@ export function Diagnostics({
     sample.speed_kmh !== undefined &&
     Number.isFinite(Number(sample.speed_kmh));
   const isStationary = hasSpeed && Number(sample.speed_kmh) === 0;
+  const vehicleData = object(sample.vehicle_data);
+  const activeDtcCodes = Array.isArray(vehicleData.dtc_codes)
+    ? vehicleData.dtc_codes
+    : [];
   const runExtendedScan = async () => {
     if (!ack || !isStationary || scanning.current) return;
     scanning.current = true;
@@ -194,6 +200,9 @@ export function Diagnostics({
               obd_speed_kmh: sample.speed_kmh,
               observed_at: sample.occurred_at,
               installed_device_status: device.status,
+              mil_on: vehicleData.mil_on,
+              has_dtc_fault: vehicleData.has_dtc_fault,
+              dtc_codes: activeDtcCodes,
             }}
           />
         </div>
@@ -289,6 +298,23 @@ export function Diagnostics({
                 <GeminiPoweredBadge />
               </div>
             </div>
+            {activeDtcCodes.length > 0 && (
+              <Space size={[6, 6]} wrap>
+                {activeDtcCodes.map((code, idx) => (
+                  <Tag
+                    key={idx}
+                    color="error"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      form.setFieldValue("code", text(code));
+                      void explain({ code: text(code) });
+                    }}
+                  >
+                    {text(code)}
+                  </Tag>
+                ))}
+              </Space>
+            )}
             <ErrorNotice error={error} />
             <Form form={form} layout="vertical" onFinish={explain}>
               <Form.Item

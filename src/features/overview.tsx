@@ -5,6 +5,7 @@ import {
   Col,
   Row as GridRow,
   Progress,
+  Space,
   Statistic,
   Table,
   Tag,
@@ -378,6 +379,7 @@ export function Overview({ platform = false }: { platform?: boolean }) {
                   "freshness",
                   "occurred_at",
                   "has_fault_code",
+                  "dtc_codes",
                 ]}
                 render={{
                   current_driver_name: (v) =>
@@ -385,6 +387,18 @@ export function Overview({ platform = false }: { platform?: boolean }) {
                       <Tag color="blue">{text(v)}</Tag>
                     ) : (
                       <span className="muted">{app.t("No active driver")}</span>
+                    ),
+                  dtc_codes: (v) =>
+                    Array.isArray(v) && v.length > 0 ? (
+                      <Space size={[4, 4]} wrap>
+                        {v.map((c, idx) => (
+                          <Tag color="error" key={idx}>
+                            {text(c)}
+                          </Tag>
+                        ))}
+                      </Space>
+                    ) : (
+                      <span className="muted">—</span>
                     ),
                 }}
                 poll={pollMs}
