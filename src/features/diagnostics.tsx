@@ -168,17 +168,18 @@ export function Diagnostics({
     }
   };
   const explain = async ({ code }: { code: string }) => {
-    if (explaining.current && !explaining.current.signal.aborted) return;
+    explaining.current?.abort();
     const controller = new AbortController();
     explaining.current = controller;
-    form.resetFields();
+    const normalizedCode = code.toUpperCase().trim();
+    form.setFieldValue("code", normalizedCode);
     setResult(null);
     setBusy(true);
     setError(null);
     try {
       const r = await api<Row>(orgPath(app.organizationId, "/dtc-ai"), {
         method: "POST",
-        body: { code: code.toUpperCase().trim() },
+        body: { code: normalizedCode },
         sensitive: true,
         readOnlyAction: true,
         signal: controller.signal,
@@ -187,8 +188,9 @@ export function Diagnostics({
     } catch (e) {
       if (!controller.signal.aborted) setError(e);
     } finally {
-      controller.abort();
-      setBusy(false);
+      if (explaining.current === controller) {
+        setBusy(false);
+      }
     }
   };
   return (

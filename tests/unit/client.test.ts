@@ -362,4 +362,58 @@ describe("credentialed transport", () => {
     expect((err as ApiError).status).toBe(502);
     expect((err as ApiError).uncertain).toBe(false);
   });
+  it("extracts GEMINI_CAPACITY_ISSUE code and serverMessage from AI 502 errors and keeps path on status 0", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            status: 502,
+            timestamp: "2026-11-22T00:00:00Z",
+            ip_address: null,
+            request_id: "ai-req-1",
+            title: "Request Failed",
+            desc: "Please try again later due to Google Gemini capacity issue",
+            data: { error: { code: "GEMINI_CAPACITY_ISSUE" } },
+          }),
+          {
+            status: 502,
+            headers: {
+              "content-type": "application/json",
+              "X-Request-ID": "ai-req-1",
+            },
+          },
+        ),
+      ),
+    );
+    await expect(
+      api("/api/v1/organizations/1/dtc-ai", {
+        method: "POST",
+        body: { code: "P0730" },
+        readOnlyAction: true,
+      }),
+    ).rejects.toMatchObject({
+      status: 502,
+      code: "GEMINI_CAPACITY_ISSUE",
+      serverMessage:
+        "Please try again later due to Google Gemini capacity issue",
+      path: "/api/v1/organizations/1/dtc-ai",
+    });
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockRejectedValue(new TypeError("Failed to fetch")),
+    );
+    await expect(
+      api("/api/v1/organizations/1/dtc-ai", {
+        method: "POST",
+        body: { code: "P0730" },
+        readOnlyAction: true,
+      }),
+    ).rejects.toMatchObject({
+      status: 0,
+      path: "/api/v1/organizations/1/dtc-ai",
+      uncertain: false,
+    });
+  });
 });

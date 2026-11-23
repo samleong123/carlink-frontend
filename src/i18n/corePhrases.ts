@@ -240,6 +240,10 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
       "The API server or its upstream returned HTTP 502. Use the request reference to investigate that server response.",
     "error.503":
       "A backend dependency is unavailable. Contact an operator using the request reference.",
+    "Google Gemini temporary capacity issue":
+      "Google Gemini temporary capacity issue",
+    "Please try again later due to Google Gemini capacity issue":
+      "Please try again later due to Google Gemini capacity issue",
     "Outcome uncertain — reconcile before retrying":
       "Outcome uncertain — reconcile before retrying",
     "API response format mismatch": "API response format mismatch",
@@ -630,6 +634,10 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
       "Pelayan API atau huluan mengembalikan HTTP 502. Gunakan rujukan permintaan untuk menyiasat tindak balas pelayan itu.",
     "error.503":
       "Kebergantungan pelayan tidak tersedia. Hubungi pengendali menggunakan rujukan permintaan.",
+    "Google Gemini temporary capacity issue":
+      "Isu kapasiti sementara Google Gemini",
+    "Please try again later due to Google Gemini capacity issue":
+      "Sila cuba lagi sebentar nanti disebabkan isu kapasiti Google Gemini",
     "Outcome uncertain — reconcile before retrying":
       "Keputusan tidak pasti — selaraskan sebelum mencuba semula",
     "API response format mismatch": "Format respons API tidak sepadan",
@@ -1011,6 +1019,9 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
     "error.502":
       "API 服务器或其上游返回 HTTP 502。请使用请求参考编号排查该服务器响应。",
     "error.503": "后端依赖项不可用。请使用请求参考编号联系运营人员。",
+    "Google Gemini temporary capacity issue": "Google Gemini 临时容量问题",
+    "Please try again later due to Google Gemini capacity issue":
+      "由于 Google Gemini 容量问题，请稍后再试",
     "Outcome uncertain — reconcile before retrying":
       "结果不确定 — 请先核对后再重试",
     "API response format mismatch": "API 响应格式不匹配",
@@ -1399,6 +1410,10 @@ export const CORE_PHRASES: Record<Locale, Record<string, string>> = {
       "API சர்வர் அல்லது அதன் மேல்நிலை HTTP 502-ஐ திருப்பியது. அந்த சர்வர் பதிலை ஆராய கோரிக்கை குறிப்பைப் பயன்படுத்தவும்.",
     "error.503":
       "பின்தளச் சார்பு கிடைக்கவில்லை. கோரிக்கை குறிப்பைப் பயன்படுத்தி நிர்வாகியைத் தொடர்பு கொள்ளவும்.",
+    "Google Gemini temporary capacity issue":
+      "Google Gemini தற்காலிக திறன் சிக்கல்",
+    "Please try again later due to Google Gemini capacity issue":
+      "Google Gemini திறன் சிக்கல் காரணமாக தயவுசெய்து சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்",
     "Outcome uncertain — reconcile before retrying":
       "முடிவு உறுதியற்றது — மீண்டும் முயற்சிக்கும் முன் சரிபார்க்கவும்",
     "API response format mismatch": "API பதில் வடிவம் பொருந்தவில்லை",

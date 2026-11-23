@@ -171,6 +171,8 @@ export class ApiError extends Error {
     public uncertain = false,
     public retryAfter?: number,
     public path = "",
+    public code = "",
+    public serverMessage = "",
   ) {
     super(
       status === 0
@@ -278,17 +280,24 @@ export async function api<T>(
     if (epoch !== generation)
       throw new DOMException("Context changed", "AbortError");
     const headerRequestId = response.headers.get("X-Request-ID") || "";
-    const serverError = (data?: unknown) =>
-      new ApiError(
+    const serverError = (data?: unknown) => {
+      const dataObj = object(data);
+      const innerErr = object(object(dataObj.data).error);
+      const errCode = typeof innerErr.code === "string" ? innerErr.code : "";
+      const serverDesc = typeof dataObj.desc === "string" ? dataObj.desc : "";
+      return new ApiError(
         response.status,
-        typeof object(data).request_id === "string"
-          ? String(object(data).request_id)
+        typeof dataObj.request_id === "string"
+          ? String(dataObj.request_id)
           : headerRequestId,
-        errorFields(object(data).data),
+        errorFields(dataObj.data),
         mutatingWrite && response.status >= 500,
         Number(response.headers.get("Retry-After")) || undefined,
         url.pathname,
+        errCode,
+        serverDesc,
       );
+    };
     if (!response.headers.get("content-type")?.includes("application/json")) {
       if (!response.ok) throw serverError();
       throw new ResponseContractError(
@@ -347,7 +356,14 @@ export async function api<T>(
       (error instanceof DOMException && error.name === "AbortError")
     )
       throw error;
-    throw new ApiError(0, "", {}, mutatingWrite && sent);
+    throw new ApiError(
+      0,
+      "",
+      {},
+      mutatingWrite && sent,
+      undefined,
+      url.pathname,
+    );
   } finally {
     controllers.delete(controller);
     options.signal?.removeEventListener("abort", abort);

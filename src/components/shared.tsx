@@ -264,6 +264,9 @@ export function ErrorNotice({
   const uncertain = contract?.uncertain || e?.uncertain;
   const requestId = contract?.requestId || e?.requestId;
   const path = contract?.path || e?.path;
+  const isGeminiCapacity =
+    e?.code === "GEMINI_CAPACITY_ISSUE" ||
+    (e?.status === 0 && e.path.endsWith("-ai"));
   const statusCodes = [
     0, 401, 402, 403, 404, 409, 410, 413, 415, 419, 422, 429, 502, 503,
   ];
@@ -278,11 +281,13 @@ export function ErrorNotice({
           ? ct("Outcome uncertain — reconcile before retrying")
           : contract
             ? ct("API response format mismatch")
-            : e?.status
-              ? ct("Request could not complete ({status})", {
-                  status: e.status,
-                })
-              : ct("API unavailable")
+            : e?.code === "GEMINI_CAPACITY_ISSUE"
+              ? ct("Google Gemini temporary capacity issue")
+              : e?.status
+                ? ct("Request could not complete ({status})", {
+                    status: e.status,
+                  })
+                : ct("API unavailable")
       }
       description={
         <>
@@ -296,13 +301,23 @@ export function ErrorNotice({
                     "The server returned HTTP {status}, but this frontend could not read the expected response format. {issue}",
                     { status: contract.httpStatus, issue: contract.issue },
                   )
-                : !e && error instanceof Error
-                  ? error.message
-                  : statusKey
-                    ? ct(statusKey)
-                    : ct(
-                        "The request failed. Refresh the record or contact an operator.",
-                      )}
+                : isGeminiCapacity
+                  ? ct(
+                      "Please try again later due to Google Gemini capacity issue",
+                    )
+                  : e?.status === 502 &&
+                      e.serverMessage &&
+                      e.code === "GEMINI_CAPACITY_ISSUE"
+                    ? ct(
+                        "Please try again later due to Google Gemini capacity issue",
+                      )
+                    : !e && error instanceof Error
+                      ? error.message
+                      : statusKey
+                        ? ct(statusKey)
+                        : ct(
+                            "The request failed. Refresh the record or contact an operator.",
+                          )}
           </p>
           {path && (
             <p className="reference">{ct("Endpoint: {path}", { path })}</p>
