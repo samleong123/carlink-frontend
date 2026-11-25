@@ -215,10 +215,32 @@ function mergeSampleFields(base: Row, extra?: Row): Row {
   };
 }
 
+export function csvCell(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  let raw = text(value);
+  // Neutralize spreadsheet formula triggers while preserving negative numbers like coordinates.
+  if (!/^-?\d+(?:\.\d+)?$/.test(raw) && /^[=+\-@\t\r]/.test(raw)) {
+    raw = `'${raw}`;
+  }
+  return /[",\n\r]/.test(raw) ? `"${raw.replace(/"/g, '""')}"` : raw;
+}
+
+export function buildCsv(
+  headers: readonly string[],
+  records: Row[],
+): string {
+  const headerLine = headers.join(",");
+  const lines = records.map((rec) =>
+    headers.map((col) => csvCell(rec[col])).join(","),
+  );
+  return [headerLine, ...lines].join("\r\n");
+}
+
 export function enrichRowsWithTelemetryAndSafety(
   baseRows: Row[],
   telemetrySamples: Row[] = [],
   safetyEvents: Row[] = [],
+  windowBounds?: { fromMs?: number; toMs?: number },
 ): Row[] {
   const sampleById = new Map<string, Row>();
   const sampleByTimeSec = new Map<number, Row>();
@@ -231,9 +253,36 @@ export function enrichRowsWithTelemetryAndSafety(
     }
   }
 
-  const activeEvents = safetyEvents.filter(
-    (e) => e.state !== "superseded" && e.state !== "excluded",
-  );
+  let minMs = windowBounds?.fromMs;
+  let maxMs = windowBounds?.toMs;
+  if (minMs === undefined && maxMs === undefined) {
+    const rowTimes = baseRows
+      .map((r) => Date.parse(text(r.occurred_at)))
+      .filter((t) => Number.isFinite(t));
+    if (rowTimes.length > 0) {
+      minMs = Math.min(...rowTimes) - 1000;
+      maxMs = Math.max(...rowTimes) + 1000;
+    }
+  }
+
+  const hasWindow = minMs !== undefined || maxMs !== undefined;
+  const effectiveMinMs = minMs ?? -Infinity;
+  const effectiveMaxMs = maxMs ?? Infinity;
+  const baseIds = new Set(baseRows.map((r) => text(r.id)).filter(Boolean));
+
+  const activeEvents = safetyEvents.filter((e) => {
+    if (e.state === "superseded" || e.state === "excluded") return false;
+    const evTs = Date.parse(text(e.occurred_at));
+    if (hasWindow) {
+      return (
+        Number.isFinite(evTs) &&
+        evTs >= effectiveMinMs &&
+        evTs <= effectiveMaxMs
+      );
+    }
+    const endId = text(e.end_sample_id);
+    return Boolean(endId && baseIds.has(endId));
+  });
   const eventsByEndSampleId = new Map<string, Row[]>();
   const unmatchedEvents: Row[] = [];
   for (const ev of activeEvents) {
@@ -370,7 +419,7 @@ export async function fetchPagedList(
   path: string,
   query: Query = {},
   signal?: AbortSignal,
-  maxPages = 50,
+  maxPages = Number.POSITIVE_INFINITY,
 ): Promise<{ items: Row[]; timestamp: string; truncated: boolean }> {
   const items: Row[] = [];
   let nextCursor: string | undefined;
@@ -391,7 +440,7 @@ export async function fetchPagedList(
     const cursorToken = res.data.pagination?.next_cursor || undefined;
     if (!cursorToken || cursorToken === nextCursor) break;
     nextCursor = cursorToken;
-    if (page === maxPages - 1) truncated = true;
+    if (Number.isFinite(maxPages) && page === maxPages - 1) truncated = true;
   }
   return { items, timestamp, truncated };
 }
@@ -404,11 +453,11 @@ export async function fetchTelemetryRange(
   {
     endpoint = "telemetry",
     signal,
-    maxChunks = 5,
+    maxPages = Number.POSITIVE_INFINITY,
   }: {
     endpoint?: "telemetry" | "positions";
     signal?: AbortSignal;
-    maxChunks?: number;
+    maxPages?: number;
   } = {},
 ): Promise<{ items: Row[]; timestamp: string; truncated: boolean }> {
   const startMs = Date.parse(fromIso);
@@ -416,40 +465,27 @@ export async function fetchTelemetryRange(
   if (!Number.isFinite(startMs)) {
     return { items: [], timestamp: "", truncated: false };
   }
-  // Telemetry endpoints enforce to > from and a max 86400s window per request.
   const endMs = Number.isFinite(rawEndMs)
     ? Math.max(startMs + 2000, rawEndMs)
     : Math.max(startMs + 2000, Date.now() + 1000);
 
-  const maxChunkMs = 23.5 * 3600 * 1000;
+  const res = await fetchPagedList(
+    orgPath(organizationId, `/vehicles/${segment(vehicleId)}/${endpoint}`),
+    {
+      from: new Date(startMs).toISOString(),
+      to: new Date(endMs).toISOString(),
+      per_page: 200,
+    },
+    signal,
+    maxPages,
+  );
   const deduped = new Map<string, Row>();
-  let timestamp = "";
-  let truncated = false;
-  let chunkStart = startMs;
-
-  for (let chunk = 0; chunk < maxChunks && chunkStart < endMs; chunk++) {
-    const chunkEnd = Math.min(endMs, chunkStart + maxChunkMs);
-    const res = await fetchPagedList(
-      orgPath(organizationId, `/vehicles/${segment(vehicleId)}/${endpoint}`),
-      {
-        from: new Date(chunkStart).toISOString(),
-        to: new Date(chunkEnd).toISOString(),
-        per_page: 200,
-      },
-      signal,
-      50,
-    );
-    timestamp = res.timestamp || timestamp;
-    if (res.truncated) truncated = true;
-    for (const row of res.items) {
-      deduped.set(rowPointKey(row), row);
-    }
-    chunkStart = chunkEnd;
+  for (const row of res.items) {
+    deduped.set(rowPointKey(row), row);
   }
-  if (chunkStart < endMs) truncated = true;
 
   const items = [...deduped.values()].sort(
     (a, b) => Date.parse(text(a.occurred_at)) - Date.parse(text(b.occurred_at)),
   );
-  return { items, timestamp, truncated };
+  return { items, timestamp: res.timestamp, truncated: res.truncated };
 }

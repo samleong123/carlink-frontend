@@ -270,8 +270,10 @@ export function CoordinateMap({
     markersByKeyRef.current.clear();
     if (!valid.length || !boundsInfo) return;
 
-    const isTrack = resolvedMode === "route" || resolvedMode === "coverage";
-    const sorted = isTrack
+    const drawPolylines = resolvedMode === "route";
+    const isCoverageOrRoute =
+      resolvedMode === "route" || resolvedMode === "coverage";
+    const sorted = isCoverageOrRoute
       ? [...valid].sort(
           (a, b) =>
             (Date.parse(text(a.occurred_at)) || 0) -
@@ -279,10 +281,13 @@ export function CoordinateMap({
         )
       : valid;
 
-    if (isTrack && sorted.length > 1) {
+    if (drawPolylines && sorted.length > 1) {
       for (let i = 0; i < sorted.length - 1; i++) {
         const a = sorted[i];
         const b = sorted[i + 1];
+        const vA = text(a.vehicle_id || a.registration_number);
+        const vB = text(b.vehicle_id || b.registration_number);
+        if (vA && vB && vA !== vB) continue;
         const ptA: [number, number] = [Number(a.latitude), Number(a.longitude)];
         const ptB: [number, number] = [Number(b.latitude), Number(b.longitude)];
         const tA = Date.parse(text(a.occurred_at));
@@ -310,44 +315,20 @@ export function CoordinateMap({
           continue;
         }
 
-        let segColor = "#1677ff";
-        let segTooltip = "";
-        if (resolvedMode === "coverage") {
-          const netA = object(a.network_data);
-          const netB = object(b.network_data);
-          const rA = finiteNumber(
-            netA.rsrp_dbm ?? netA.rsrp ?? a.rsrp_dbm ?? a.rsrp,
-          );
-          const rB = finiteNumber(
-            netB.rsrp_dbm ?? netB.rsrp ?? b.rsrp_dbm ?? b.rsrp,
-          );
-          const segRsrp =
-            rA !== null && rB !== null ? (rA + rB) / 2 : (rB ?? rA);
-          const band = rsrpColor(segRsrp);
-          segColor = band.color;
-          segTooltip =
-            segRsrp !== null
-              ? ct("Signal: {value} dBm ({band})", {
-                  value: Math.round(segRsrp),
-                  band: ct(band.label),
-                })
-              : ct("Signal unknown");
-        } else {
-          const sA = finiteNumber(
-            a.speed_kmh ?? object(a.vehicle_data).speed_kmh,
-          );
-          const sB = finiteNumber(
-            b.speed_kmh ?? object(b.vehicle_data).speed_kmh,
-          );
-          const segSpeed =
-            sA !== null && sB !== null ? (sA + sB) / 2 : (sB ?? sA);
-          const band = speedColor(segSpeed);
-          segColor = band.color;
-          segTooltip =
-            segSpeed !== null
-              ? ct("Speed: {value} km/h", { value: Math.round(segSpeed) })
-              : ct("Speed unknown");
-        }
+        const sA = finiteNumber(
+          a.speed_kmh ?? object(a.vehicle_data).speed_kmh,
+        );
+        const sB = finiteNumber(
+          b.speed_kmh ?? object(b.vehicle_data).speed_kmh,
+        );
+        const segSpeed =
+          sA !== null && sB !== null ? (sA + sB) / 2 : (sB ?? sA);
+        const band = speedColor(segSpeed);
+        const segColor = band.color;
+        const segTooltip =
+          segSpeed !== null
+            ? ct("Speed: {value} km/h", { value: Math.round(segSpeed) })
+            : ct("Speed unknown");
 
         L.polyline([ptA, ptB], {
           color: "#0f172a",
@@ -410,9 +391,9 @@ export function CoordinateMap({
       const safety = getSafetySummary(row);
       const safetyTitle = localizedSafetyLabel(safety, ct);
 
-      const isStart = isTrack && sorted.length > 1 && idx === 0;
+      const isStart = drawPolylines && sorted.length > 1 && idx === 0;
       const isLatest =
-        isTrack && sorted.length > 1 && idx === sorted.length - 1;
+        drawPolylines && sorted.length > 1 && idx === sorted.length - 1;
       const isEndpoint = isStart || isLatest;
 
       let icon: LeafletNs.DivIcon;
@@ -435,12 +416,12 @@ export function CoordinateMap({
           popupAnchor: [0, -13],
         });
         zIndexOffset = 900;
-      } else if (isTrack) {
+      } else if (isCoverageOrRoute) {
         const dotColor =
           resolvedMode === "coverage"
             ? rsrpColor(rsrpRaw).color
             : speedColor(speedNum).color;
-        const size = isEndpoint ? 13 : 8;
+        const size = resolvedMode === "coverage" ? 10 : isEndpoint ? 13 : 8;
         icon = L.divIcon({
           className: "carlink-div-icon",
           html: `<span class="carlink-pin carlink-dot${isEndpoint ? " carlink-endpoint" : ""}" style="background:${dotColor};" aria-label="${escapeHtml(plate)}"></span>`,
@@ -663,7 +644,7 @@ export function CoordinateMap({
             {RSRP_LEGEND_BANDS.map((b) => (
               <span className="map-legend-item" key={b.label}>
                 <span
-                  className="map-legend-line"
+                  className="map-legend-dot"
                   style={{ background: b.color }}
                 />{" "}
                 {ct(b.label)}
@@ -672,9 +653,6 @@ export function CoordinateMap({
             <span className="map-legend-item">
               <span className="map-legend-dot signal-unknown" />{" "}
               {ct("Unknown signal")}
-            </span>
-            <span className="map-legend-item">
-              <span className="map-legend-line dashed" /> {ct("Gap (> 120s)")}
             </span>
           </>
         ) : resolvedMode === "route" ? (

@@ -22,6 +22,7 @@ import { downloadBlob, orgPath, segment } from "../api/client";
 import { object, text, type Row } from "../api/types";
 import { CoordinateMap, coordinates } from "../components/CoordinateMap";
 import {
+  buildCsv,
   enrichRowsWithTelemetryAndSafety,
   fetchPagedList,
   fetchTelemetryRange,
@@ -142,6 +143,85 @@ const LOCATION_CSV_COLUMNS = [
   "detection_source",
 ] as const;
 
+const TELEMETRY_CSV_COLUMNS = [
+  "id",
+  "occurred_at",
+  "received_at",
+  "speed_kmh",
+  "engine_rpm",
+  "ecu_voltage_v",
+  "throttle_pct",
+  "engine_load_pct",
+  "coolant_temp_c",
+  "intake_temp_c",
+  "maf_gps",
+  "fuel_rate_lph",
+  "fuel_level_pct",
+  "engine_runtime_s",
+  "instantL100km",
+  "obd_connected",
+  "engine_running",
+  "mil_on",
+  "has_dtc_fault",
+  "dtc_codes",
+  "accel_x_mps2",
+  "accel_y_mps2",
+  "accel_z_mps2",
+  "latitude",
+  "longitude",
+  "source_format",
+] as const;
+
+const VEHICLE_COVERAGE_CSV_COLUMNS = [
+  "id",
+  "occurred_at",
+  "latitude",
+  "longitude",
+  "operator",
+  "network_type",
+  "registered_plmn",
+  "cell_id",
+  "tac",
+  "lte_band",
+  "earfcn",
+  "pci",
+  "rsrp_dbm",
+  "rsrq_db",
+  "sinr_db",
+  "rssi_dbm",
+  "registration_status",
+  "roaming",
+  "connected",
+  "source_format",
+] as const;
+
+const MILEAGE_CSV_COLUMNS = [
+  "id",
+  "from_at",
+  "to_at",
+  "distance_m",
+  "distance_km",
+  "source",
+  "quality",
+  "algorithm",
+] as const;
+
+const ENERGY_CSV_COLUMNS = [
+  "from",
+  "to",
+  "fuel_litres",
+  "estimated_co2_kg",
+  "emission_factor",
+  "covered_seconds",
+  "unknown_seconds",
+  "sources",
+  "quality",
+] as const;
+
+function safeFileSlug(plate: string | undefined, vehicleId: string): string {
+  return (plate || vehicleId).trim().replace(/[/\\:*?"<>|]+/g, "-") || vehicleId;
+}
+
 function toFiniteNumber(value: unknown): number | null {
   if (
     value === null ||
@@ -204,35 +284,119 @@ export function chartSegments(
   return segments;
 }
 
-function csvCell(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  let raw = text(value);
-  // Neutralize spreadsheet formula triggers while preserving negative numbers like coordinates.
-  if (!/^-?\d+(?:\.\d+)?$/.test(raw) && /^[=+\-@\t\r]/.test(raw)) {
-    raw = `'${raw}`;
-  }
-  return /[",\n\r]/.test(raw) ? `"${raw.replace(/"/g, '""')}"` : raw;
+function buildLocationsCsv(rows: Row[]): string {
+  return buildCsv(
+    LOCATION_CSV_COLUMNS,
+    rows.map((row) => {
+      const summary = getSafetySummary(row);
+      return {
+        ...row,
+        harsh_braking: summary.harshBraking,
+        harsh_acceleration: summary.rapidAcceleration,
+        acceleration_ms2:
+          summary.accelerationMs2 !== null
+            ? Number(summary.accelerationMs2.toFixed(3))
+            : "",
+        detection_source: summary.sources.join(" + "),
+      };
+    }),
+  );
 }
 
-function buildLocationsCsv(rows: Row[]): string {
-  const header = LOCATION_CSV_COLUMNS.join(",");
-  const lines = rows.map((row) => {
-    const summary = getSafetySummary(row);
-    const enrichedRow: Row = {
-      ...row,
-      harsh_braking: summary.harshBraking,
-      harsh_acceleration: summary.rapidAcceleration,
-      acceleration_ms2:
-        summary.accelerationMs2 !== null
-          ? Number(summary.accelerationMs2.toFixed(3))
-          : "",
-      detection_source: summary.sources.join(" + "),
-    };
-    return LOCATION_CSV_COLUMNS.map((col) => csvCell(enrichedRow[col])).join(
-      ",",
-    );
-  });
-  return [header, ...lines].join("\r\n");
+function buildTelemetryCsv(rows: Row[]): string {
+  return buildCsv(
+    TELEMETRY_CSV_COLUMNS,
+    rows.map((row) => {
+      const vd = object(row.vehicle_data);
+      const dtcs = Array.isArray(vd.dtc_codes)
+        ? vd.dtc_codes.map((c) => text(c)).filter(Boolean).join(";")
+        : "";
+      return {
+        id: row.id,
+        occurred_at: row.occurred_at,
+        received_at: row.received_at,
+        speed_kmh: extractObdMetric(row, "speed_kmh") ?? "",
+        engine_rpm: extractObdMetric(row, "engine_rpm") ?? "",
+        ecu_voltage_v: extractObdMetric(row, "ecu_voltage_v") ?? "",
+        throttle_pct: extractObdMetric(row, "throttle_pct") ?? "",
+        engine_load_pct: extractObdMetric(row, "engine_load_pct") ?? "",
+        coolant_temp_c: extractObdMetric(row, "coolant_temp_c") ?? "",
+        intake_temp_c: extractObdMetric(row, "intake_temp_c") ?? "",
+        maf_gps: extractObdMetric(row, "maf_gps") ?? "",
+        fuel_rate_lph: extractObdMetric(row, "fuel_rate_lph") ?? "",
+        fuel_level_pct: extractObdMetric(row, "fuel_level_pct") ?? "",
+        engine_runtime_s: extractObdMetric(row, "engine_runtime_s") ?? "",
+        instantL100km: extractObdMetric(row, "instantL100km") ?? "",
+        obd_connected: vd.obd_connected ?? "",
+        engine_running: vd.engine_running ?? "",
+        mil_on: vd.mil_on ?? "",
+        has_dtc_fault: vd.has_dtc_fault ?? "",
+        dtc_codes: dtcs,
+        accel_x_mps2: extractObdMetric(row, "accel_x_mps2") ?? "",
+        accel_y_mps2: extractObdMetric(row, "accel_y_mps2") ?? "",
+        accel_z_mps2: extractObdMetric(row, "accel_z_mps2") ?? "",
+        latitude: row.latitude ?? "",
+        longitude: row.longitude ?? "",
+        source_format: row.source_format ?? "",
+      };
+    }),
+  );
+}
+
+function buildVehicleCoverageCsv(rows: Row[]): string {
+  return buildCsv(
+    VEHICLE_COVERAGE_CSV_COLUMNS,
+    rows.map((row) => {
+      const net = object(row.network_data);
+      return {
+        id: row.id,
+        occurred_at: row.occurred_at,
+        latitude: row.latitude ?? "",
+        longitude: row.longitude ?? "",
+        operator: net.operator ?? "",
+        network_type: net.network_type ?? "",
+        registered_plmn: net.registered_plmn ?? "",
+        cell_id: net.cell_id ?? "",
+        tac: net.tac ?? "",
+        lte_band: net.lte_band ?? "",
+        earfcn: net.earfcn ?? "",
+        pci: net.pci ?? "",
+        rsrp_dbm: net.rsrp_dbm ?? "",
+        rsrq_db: net.rsrq_db ?? "",
+        sinr_db: net.sinr_db ?? "",
+        rssi_dbm: net.rssi_dbm ?? "",
+        registration_status: net.registration_status ?? "",
+        roaming: net.roaming ?? "",
+        connected: net.connected ?? "",
+        source_format: row.source_format ?? "",
+      };
+    }),
+  );
+}
+
+function buildMileageCsv(rows: Row[]): string {
+  return buildCsv(
+    MILEAGE_CSV_COLUMNS,
+    rows.map((row) => {
+      const metres = toFiniteNumber(row.distance_m);
+      return {
+        ...row,
+        distance_km: metres !== null ? Number((metres / 1000).toFixed(4)) : "",
+      };
+    }),
+  );
+}
+
+function buildEnergyCsv(data: Row): string {
+  const sources = Array.isArray(data.sources)
+    ? data.sources.map((s) => text(s)).filter(Boolean).join(";")
+    : text(data.sources);
+  return buildCsv(ENERGY_CSV_COLUMNS, [
+    {
+      ...data,
+      sources,
+    },
+  ]);
 }
 
 function mergeSample(row: Row, enriched?: Row): Row {
@@ -640,6 +804,8 @@ function Telemetry({
   }, [latestSample, positions, coverage]);
 
   const positionWindow = windowQuery(range);
+  const fromMs = range[0].valueOf();
+  const toMs = range[1].valueOf();
   const telemetryBehaviorQ = useQuery({
     queryKey: [
       app.session?.user.id,
@@ -657,7 +823,7 @@ function Telemetry({
         vehicleId,
         positionWindow.from as string,
         positionWindow.to as string,
-        { endpoint: "telemetry", signal, maxChunks: 2 },
+        { endpoint: "telemetry", signal },
       ),
     retry: false,
     refetchInterval: (q) => (q.state.error ? false : poll || false),
@@ -679,7 +845,6 @@ function Telemetry({
         orgPath(app.organizationId, "/safety-events"),
         { vehicle_id: vehicleId, per_page: 100 },
         signal,
-        10,
       ),
     retry: false,
     refetchInterval: (q) => (q.state.error ? false : poll || false),
@@ -751,14 +916,23 @@ function Telemetry({
     return merged;
   }, [items, latestSample, range, positions, coverage]);
 
+  const scopedSafetyEvents = useMemo(() => {
+    const evs = safetyEventsQ.data?.items ?? [];
+    return evs.filter((ev) => {
+      const ts = Date.parse(text(ev.occurred_at));
+      return Number.isFinite(ts) && ts >= fromMs && ts <= toMs;
+    });
+  }, [safetyEventsQ.data, fromMs, toMs]);
+
   const enrichedPositionItems = useMemo(() => {
     if (!positions) return items;
     return enrichRowsWithTelemetryAndSafety(
       items,
       telemetryBehaviorQ.data?.items ?? [],
-      safetyEventsQ.data?.items ?? [],
+      scopedSafetyEvents,
+      { fromMs, toMs },
     );
-  }, [positions, items, telemetryBehaviorQ.data, safetyEventsQ.data]);
+  }, [positions, items, telemetryBehaviorQ.data, scopedSafetyEvents, fromMs, toMs]);
 
   const enrichedPositionMap = useMemo(() => {
     const map = new Map<string, Row>();
@@ -831,14 +1005,31 @@ function Telemetry({
   }, [metric, mergedItems]);
 
   const exportLocationsCsv = useCallback(() => {
-    const label =
-      (plate || vehicleId).trim().replace(/[/\\:*?"<>|]+/g, "-") || vehicleId;
+    const label = safeFileSlug(plate, vehicleId);
     const csvString = buildLocationsCsv(enrichedPositionItems);
     downloadBlob(
       new Blob([csvString], { type: "text/csv;charset=utf-8" }),
       `vehicle-${label}-locations.csv`,
     );
   }, [enrichedPositionItems, plate, vehicleId]);
+
+  const exportTelemetryCsv = useCallback(() => {
+    const label = safeFileSlug(plate, vehicleId);
+    const csvString = buildTelemetryCsv(mergedItems);
+    downloadBlob(
+      new Blob([csvString], { type: "text/csv;charset=utf-8" }),
+      `vehicle-${label}-telemetry.csv`,
+    );
+  }, [mergedItems, plate, vehicleId]);
+
+  const exportCoverageCsv = useCallback(() => {
+    const label = safeFileSlug(plate, vehicleId);
+    const csvString = buildVehicleCoverageCsv(items);
+    downloadBlob(
+      new Blob([csvString], { type: "text/csv;charset=utf-8" }),
+      `vehicle-${label}-coverage.csv`,
+    );
+  }, [items, plate, vehicleId]);
 
   const telemetryRender = useMemo(() => {
     return Object.fromEntries(
@@ -1186,7 +1377,18 @@ function Telemetry({
             >
               {app.t("Export CSV")}
             </Button>
-          ) : undefined
+          ) : coverage ? (
+            <Button onClick={exportCoverageCsv} disabled={!items.length}>
+              {app.t("Export CSV")}
+            </Button>
+          ) : (
+            <Button
+              onClick={exportTelemetryCsv}
+              disabled={!mergedItems.length}
+            >
+              {app.t("Export CSV")}
+            </Button>
+          )
         }
         fields={
           positions
@@ -1260,20 +1462,103 @@ function Telemetry({
     </div>
   );
 }
-function Energy({ vehicleId, poll }: { vehicleId: string; poll?: number }) {
+function Energy({
+  vehicleId,
+  poll,
+  plate,
+}: {
+  vehicleId: string;
+  poll?: number;
+  plate?: string;
+}) {
   const app = useApp(),
     [range, setRange] = useLiveSlidingRange(poll);
+  const path = orgPath(
+    app.organizationId,
+    `/vehicles/${segment(vehicleId)}/energy`,
+  );
+  const energyQ = useData(path, windowQuery(range), true, poll);
+  const energyData = energyQ.data?.data;
+
+  const exportEnergyCsv = useCallback(() => {
+    if (!energyData) return;
+    const label = safeFileSlug(plate, vehicleId);
+    const csvString = buildEnergyCsv(energyData);
+    downloadBlob(
+      new Blob([csvString], { type: "text/csv;charset=utf-8" }),
+      `vehicle-${label}-fuel.csv`,
+    );
+  }, [energyData, plate, vehicleId]);
+
   return (
     <div className="stack">
       <TimeWindow value={range} onChange={setRange} />
-      <Snapshot
-        path={orgPath(
-          app.organizationId,
-          `/vehicles/${segment(vehicleId)}/energy`,
-        )}
+      <Card
+        title={app.t("Fuel & energy summary")}
+        loading={energyQ.isPending}
+        extra={
+          <Button onClick={exportEnergyCsv} disabled={!energyData}>
+            {app.t("Export CSV")}
+          </Button>
+        }
+      >
+        <ErrorNotice error={energyQ.error} retry={() => void energyQ.refetch()} />
+        {energyData && <Details data={energyData} />}
+      </Card>
+    </div>
+  );
+}
+
+function VehicleMileage({
+  vehicleId,
+  poll,
+  plate,
+  canCorrect,
+  onOpenBaseline,
+}: {
+  vehicleId: string;
+  poll?: number;
+  plate?: string;
+  canCorrect: boolean;
+  onOpenBaseline: () => void;
+}) {
+  const app = useApp();
+  const [range, setRange] = useLiveSlidingRange(poll);
+  const [segments, setSegments] = useState<Row[]>([]);
+  const basePath = orgPath(app.organizationId, `/vehicles/${segment(vehicleId)}`);
+
+  const exportMileageCsv = useCallback(() => {
+    const label = safeFileSlug(plate, vehicleId);
+    const csvString = buildMileageCsv(segments);
+    downloadBlob(
+      new Blob([csvString], { type: "text/csv;charset=utf-8" }),
+      `vehicle-${label}-mileage.csv`,
+    );
+  }, [segments, plate, vehicleId]);
+
+  return (
+    <div className="stack">
+      <Snapshot path={`${basePath}/mileage`} poll={poll} />
+      {canCorrect && (
+        <Button onClick={onOpenBaseline}>
+          {app.t("Record initial baseline")}
+        </Button>
+      )}
+      <TimeWindow value={range} onChange={setRange} />
+      <Directory
+        path={`${basePath}/mileage/segments`}
         query={windowQuery(range)}
+        fetchAllPages
         poll={poll}
+        onData={setSegments}
+        toolbarExtra={
+          <Button onClick={exportMileageCsv} disabled={!segments.length}>
+            {app.t("Export CSV")}
+          </Button>
+        }
+        fields={["from_at", "to_at", "distance_m", "quality", "source"]}
       />
+      {canCorrect && <Files targetType="mileage" targetId={vehicleId} write />}
     </div>
   );
 }
@@ -1459,28 +1744,13 @@ export function VehicleDetail({ id }: { id: string }) {
             key: "mileage",
             label: app.t("Mileage"),
             children: (
-              <div className="stack">
-                <Snapshot path={`${path}/mileage`} poll={pollMs} />
-                {app.can("mileage.correct") && (
-                  <Button onClick={() => setBaseline(true)}>
-                    {app.t("Record initial baseline")}
-                  </Button>
-                )}
-                <Directory
-                  path={`${path}/mileage/segments`}
-                  poll={pollMs}
-                  fields={[
-                    "from_at",
-                    "to_at",
-                    "distance_m",
-                    "quality",
-                    "source",
-                  ]}
-                />
-                {app.can("mileage.correct") && (
-                  <Files targetType="mileage" targetId={id} write />
-                )}
-              </div>
+              <VehicleMileage
+                vehicleId={id}
+                poll={pollMs}
+                plate={text(vehicle.registration_number)}
+                canCorrect={app.can("mileage.correct")}
+                onOpenBaseline={() => setBaseline(true)}
+              />
             ),
           },
         ]
@@ -1490,7 +1760,13 @@ export function VehicleDetail({ id }: { id: string }) {
           {
             key: "energy",
             label: app.t("Fuel"),
-            children: <Energy vehicleId={id} poll={pollMs} />,
+            children: (
+              <Energy
+                vehicleId={id}
+                poll={pollMs}
+                plate={text(vehicle.registration_number)}
+              />
+            ),
           },
         ]
       : []),

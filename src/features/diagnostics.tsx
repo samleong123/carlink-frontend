@@ -8,16 +8,19 @@ import {
   Form,
   Input,
   Space,
+  Table,
   Tag,
   Typography,
 } from "antd";
 import { api, orgPath, segment } from "../api/client";
-import { object, text, type Row } from "../api/types";
+import { object, rows, text, type Row } from "../api/types";
 import { useApp } from "../app/context";
+import { AiHistoryPanel } from "../components/AiHistoryPanel";
 import {
   Details,
   ErrorNotice,
   GeminiPoweredBadge,
+  Time,
   useData,
 } from "../components/shared";
 
@@ -75,6 +78,9 @@ export function Diagnostics({
   const app = useApp(),
     { modal } = App.useApp(),
     [result, setResult] = useState<Row | null>(null),
+    [history, setHistory] = useState<Row[]>([]),
+    [catalog, setCatalog] = useState<Row[]>([]),
+    [activeGenerationId, setActiveGenerationId] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(null),
     [form] = Form.useForm();
@@ -88,6 +94,24 @@ export function Diagnostics({
   const explaining = useRef<AbortController | null>(null),
     scanning = useRef(false),
     configuring = useRef(false);
+
+  const diagnosticsQ = useData(
+    orgPath(app.organizationId, `/vehicles/${segment(vehicleId)}/diagnostics`),
+    {},
+    app.can("telemetry.read"),
+  );
+
+  useEffect(() => {
+    const data = diagnosticsQ.data?.data;
+    if (!data) return;
+    if (Array.isArray(data.dtc_catalog)) {
+      setCatalog(rows(data.dtc_catalog));
+    }
+    if (Array.isArray(data.ai_history)) {
+      setHistory(rows(data.ai_history));
+    }
+  }, [diagnosticsQ.data]);
+
   useEffect(
     () => () => {
       form.resetFields();
@@ -105,6 +129,8 @@ export function Diagnostics({
   const activeDtcCodes = Array.isArray(vehicleData.dtc_codes)
     ? vehicleData.dtc_codes
     : [];
+  const dtcEpisodes = rows(diagnosticsQ.data?.data?.dtc_episodes);
+
   const runExtendedScan = async () => {
     if (!ack || !isStationary || scanning.current) return;
     scanning.current = true;
@@ -167,7 +193,13 @@ export function Diagnostics({
       setConfigBusy(false);
     }
   };
-  const explain = async ({ code }: { code: string }) => {
+  const explain = async ({
+    code,
+    refresh = false,
+  }: {
+    code: string;
+    refresh?: boolean;
+  }) => {
     explaining.current?.abort();
     const controller = new AbortController();
     explaining.current = controller;
@@ -179,12 +211,28 @@ export function Diagnostics({
     try {
       const r = await api<Row>(orgPath(app.organizationId, "/dtc-ai"), {
         method: "POST",
-        body: { code: normalizedCode },
+        body: refresh
+          ? { code: normalizedCode, refresh: true }
+          : { code: normalizedCode },
         sensitive: true,
         readOnlyAction: true,
         signal: controller.signal,
       });
-      if (!controller.signal.aborted) setResult(r.data);
+      if (!controller.signal.aborted) {
+        setResult(r.data);
+        if (Array.isArray(r.data.catalog)) {
+          setCatalog(rows(r.data.catalog));
+        }
+        if (Array.isArray(r.data.history)) {
+          setHistory(rows(r.data.history));
+        }
+        if (text(r.data.generation_id)) {
+          setActiveGenerationId(text(r.data.generation_id));
+        } else {
+          setActiveGenerationId(null);
+        }
+        void diagnosticsQ.refetch();
+      }
     } catch (e) {
       if (!controller.signal.aborted) setError(e);
     } finally {
@@ -193,6 +241,10 @@ export function Diagnostics({
       }
     }
   };
+
+  const isFromDtcDb =
+    result?.cached === true || text(result?.source) === "dtc_database";
+
   return (
     <div className="stack">
       <Card title={app.t("Read-only diagnostics")}>
@@ -209,6 +261,132 @@ export function Diagnostics({
           />
         </div>
       </Card>
+      {app.can("telemetry.read") && (
+        <Card
+          title={app.t("Vehicle DTC Fault Timeline (started_at to ended_at)")}
+          extra={
+            <Button
+              size="small"
+              onClick={() => void diagnosticsQ.refetch()}
+              loading={diagnosticsQ.isFetching}
+            >
+              {app.t("refresh")}
+            </Button>
+          }
+        >
+          <ErrorNotice error={diagnosticsQ.error} />
+          <Table<Row>
+            size="small"
+            rowKey={(r) => text(r.id)}
+            dataSource={dtcEpisodes}
+            loading={diagnosticsQ.isFetching}
+            pagination={{ pageSize: 8, hideOnSinglePage: true }}
+            scroll={{ x: "max-content" }}
+            locale={{
+              emptyText: app.t(
+                "No DTC fault episodes recorded for this vehicle yet.",
+              ),
+            }}
+            columns={[
+              {
+                title: app.t("DTC code"),
+                dataIndex: "code",
+                render: (v: unknown) => {
+                  const codeStr = text(v);
+                  const explainable = /^[PCBU][0-3][0-9A-F]{3}$/i.test(
+                    codeStr,
+                  );
+                  return (
+                    <Tag
+                      color="error"
+                      style={explainable ? { cursor: "pointer" } : undefined}
+                      onClick={() => {
+                        if (explainable) {
+                          void explain({ code: codeStr });
+                        }
+                      }}
+                    >
+                      {codeStr || "—"}
+                    </Tag>
+                  );
+                },
+              },
+              {
+                title: app.t("Catalog info"),
+                key: "catalog",
+                render: (_v, r) => {
+                  const comp = text(r.catalog_component);
+                  const desc = text(r.catalog_description);
+                  if (!comp && !desc) {
+                    return <span className="muted">—</span>;
+                  }
+                  return (
+                    <Space direction="vertical" size={0}>
+                      {comp && <Tag>{comp}</Tag>}
+                      {desc && (
+                        <Typography.Text
+                          type="secondary"
+                          style={{ fontSize: 12, maxWidth: 280 }}
+                          ellipsis={{ tooltip: desc }}
+                        >
+                          {desc}
+                        </Typography.Text>
+                      )}
+                    </Space>
+                  );
+                },
+              },
+              {
+                title: app.t("status"),
+                key: "status",
+                render: (_v, r) => (
+                  <Space size={4} wrap>
+                    {text(r.status) === "active" ? (
+                      <Tag color="error">{app.t("Active (Lit Up)")}</Tag>
+                    ) : (
+                      <Tag color="success">{app.t("Cleared")}</Tag>
+                    )}
+                    {Boolean(r.mil_on) && (
+                      <Tag color="warning">{app.t("MIL On")}</Tag>
+                    )}
+                  </Space>
+                ),
+              },
+              {
+                title: app.t("Started at"),
+                dataIndex: "started_at",
+                render: (v: unknown) => <Time value={v} />,
+              },
+              {
+                title: app.t("Ended at"),
+                dataIndex: "ended_at",
+                render: (v: unknown) =>
+                  v ? (
+                    <Time value={v} />
+                  ) : (
+                    <Tag color="volcano">{app.t("Ongoing (Active)")}</Tag>
+                  ),
+              },
+              {
+                title: app.t("Samples"),
+                dataIndex: "samples_count",
+                align: "right",
+                render: (v: unknown) => text(v) || "1",
+              },
+              {
+                title: app.t("Email alert"),
+                dataIndex: "email_notified_at",
+                render: (v: unknown) =>
+                  v ? (
+                    <Tag color="processing">{app.t("Email Sent")}</Tag>
+                  ) : (
+                    <span className="muted">—</span>
+                  ),
+              },
+            ]}
+          />
+        </Card>
+      )}
       {app.can("diagnostics.run") && (
         <Card title={app.t("Extended Read-Only DUDU2 DTC Scan")}>
           <div className="stack">
@@ -317,6 +495,41 @@ export function Diagnostics({
                 ))}
               </Space>
             )}
+            <Card
+              size="small"
+              title={
+                <Space size={8} wrap>
+                  <span>{app.t("DTC Database")}</span>
+                  <Tag color="blue">{catalog.length}</Tag>
+                </Space>
+              }
+            >
+              {catalog.length === 0 ? (
+                <Typography.Text type="secondary">
+                  {app.t(
+                    "No codes saved in the persistent DTC database yet. Explaining a code once saves it here for instant future lookups.",
+                  )}
+                </Typography.Text>
+              ) : (
+                <Space size={[6, 6]} wrap>
+                  {catalog.map((entry) => {
+                    const c = text(entry.code);
+                    const comp = text(entry.component);
+                    const hits = Number(entry.lookup_count || 1);
+                    return (
+                      <Tag
+                        key={c}
+                        color="geekblue"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => void explain({ code: c })}
+                      >
+                        {c} · {comp} · {hits}×
+                      </Tag>
+                    );
+                  })}
+                </Space>
+              )}
+            </Card>
             <ErrorNotice error={error} />
             <Form form={form} layout="vertical" onFinish={explain}>
               <Form.Item
@@ -343,14 +556,34 @@ export function Diagnostics({
                 />
               </Form.Item>
               <Button type="primary" htmlType="submit" loading={busy}>
-                {app.t("Explain once")}
+                {app.t("Explain code")}
               </Button>
             </Form>
             {result && (
               <div className="transient-result ai-hints-result">
                 <div className="ai-hints-bar" aria-hidden="true" />
                 <div className="ai-hints-result-head">
-                  <GeminiPoweredBadge />
+                  <Space size={8} wrap>
+                    <GeminiPoweredBadge />
+                    {isFromDtcDb ? (
+                      <Tag color="green">
+                        {app.t("Loaded from DTC Database (no AI call)")}
+                      </Tag>
+                    ) : text(result.source) === "history" ? (
+                      <Tag color="blue">
+                        {app.t("Loaded from Saved AI History")}
+                      </Tag>
+                    ) : (
+                      <Tag color="purple">
+                        {app.t("Generated by Gemini AI & saved to DTC Database")}
+                      </Tag>
+                    )}
+                    {result.lookup_count !== undefined && (
+                      <Tag>
+                        {app.t("Lookups")}: {text(result.lookup_count)}
+                      </Tag>
+                    )}
+                  </Space>
                 </div>
                 <Typography.Title level={4} className="ai-hints-result-title">
                   {String(result.code)} · {String(result.component)}
@@ -361,22 +594,53 @@ export function Diagnostics({
                   <div className="ai-hints-powered">
                     <GeminiPoweredBadge />
                     <span>
-                      {app.t(
-                        "Advisory only — generated by Google Gemini and not stored by CarLink.",
-                      )}
+                      {isFromDtcDb
+                        ? app.t(
+                            "Served from CarLink persistent DTC database without calling Google Gemini.",
+                          )
+                        : app.t(
+                            "Advisory only — generated by Google Gemini and saved in CarLink DTC database & AI history.",
+                          )}
                     </span>
                   </div>
-                  <Button
-                    onClick={() => {
-                      setResult(null);
-                      form.resetFields();
-                    }}
-                  >
-                    {app.t("Clear explanation")}
-                  </Button>
+                  <Space wrap>
+                    <Button
+                      loading={busy}
+                      onClick={() =>
+                        void explain({
+                          code: text(result.code),
+                          refresh: true,
+                        })
+                      }
+                    >
+                      {app.t("Re-analyze with AI")}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setResult(null);
+                        setActiveGenerationId(null);
+                        form.resetFields();
+                      }}
+                    >
+                      {app.t("Clear explanation")}
+                    </Button>
+                  </Space>
                 </div>
               </div>
             )}
+            <AiHistoryPanel
+              history={history}
+              activeGenerationId={activeGenerationId}
+              onSelectResult={(res, entry) => {
+                setResult({
+                  ...res,
+                  ...entry,
+                  cached: false,
+                  source: "history",
+                });
+                setActiveGenerationId(text(entry.id));
+              }}
+            />
           </div>
         </Card>
       )}

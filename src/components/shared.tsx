@@ -156,7 +156,7 @@ export function useAllTimeframeItems(
   enabled = true,
   poll?: number,
   listKey = "items",
-  maxPages = 50,
+  maxPages = Number.POSITIVE_INFINITY,
 ) {
   const app = useApp();
   return useQuery({
@@ -1092,7 +1092,6 @@ export function windowQuery(range: [Dayjs, Dayjs]): Query {
 export function TimeWindow({
   value,
   onChange,
-  maxDays = 1,
 }: {
   value: [Dayjs, Dayjs];
   onChange: (range: [Dayjs, Dayjs]) => void;
@@ -1114,11 +1113,11 @@ export function TimeWindow({
     preset(ct("Last 1 hour"), 1, "hour"),
     preset(ct("Last 6 hours"), 6, "hour"),
     preset(ct("Last 24 hours"), 24, "hour"),
-    ...(maxDays >= 7 ? [preset(ct("Last 7 days"), 7, "day")] : []),
-    ...(maxDays >= 30 ? [preset(ct("Last 30 days"), 30, "day")] : []),
+    preset(ct("Last 7 days"), 7, "day"),
+    preset(ct("Last 30 days"), 30, "day"),
+    preset(ct("Last 90 days"), 90, "day"),
+    preset(ct("Last 365 days"), 365, "day"),
   ];
-  const limitLabel =
-    maxDays === 1 ? ct("24 hours") : ct("{days} days", { days: maxDays });
   return (
     <div className="time-window">
       <DatePicker.RangePicker
@@ -1129,17 +1128,14 @@ export function TimeWindow({
         onChange={(range) => {
           if (!range?.[0] || !range[1]) return;
           const seconds = range[1].diff(range[0], "second");
-          setInvalid(seconds <= 0 || seconds > maxDays * 86400);
-          if (seconds > 0 && seconds <= maxDays * 86400)
-            onChange([range[0], range[1]]);
+          setInvalid(seconds <= 0);
+          if (seconds > 0) onChange([range[0], range[1]]);
         }}
       />
       <Typography.Text type={invalid ? "danger" : "secondary"}>
         {invalid
-          ? ct("Choose an increasing range within the allowed window.")
-          : ct("Maximum {limit} · Your account timezone", {
-              limit: limitLabel,
-            })}
+          ? ct("Choose an increasing range where end time is after start time.")
+          : ct("Select any timeframe · Your account timezone")}
       </Typography.Text>
     </div>
   );

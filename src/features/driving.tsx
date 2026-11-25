@@ -20,11 +20,13 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../app/context";
-import { api, privateFileLink, orgPath, segment } from "../api/client";
+import { api, downloadBlob, privateFileLink, orgPath, segment } from "../api/client";
 import { object, rows, text, type Row } from "../api/types";
 import { CoordinateMap, coordinates } from "../components/CoordinateMap";
+import { AiHistoryPanel } from "../components/AiHistoryPanel";
 import { NfcEnrollModal } from "../components/NfcEnrollModal";
 import {
+  buildCsv,
   enrichRowsWithTelemetryAndSafety,
   fetchPagedList,
   fetchTelemetryRange,
@@ -272,7 +274,7 @@ function JourneyDetailDrawer({
         vehicleId,
         startedAt,
         windowEndIso,
-        { endpoint: "telemetry", signal, maxChunks: 5 },
+        { endpoint: "telemetry", signal },
       ),
     retry: false,
     refetchInterval: (q) =>
@@ -557,6 +559,21 @@ function JourneyDetailDrawer({
             </Col>
             <Col xs={12} sm={8} md={6}>
               <Statistic
+                title={app.t("Estimated CO₂")}
+                value={
+                  finiteNumber(journey.estimated_co2_kg) !== null
+                    ? Number(finiteNumber(journey.estimated_co2_kg)!.toFixed(2))
+                    : "—"
+                }
+                suffix={
+                  finiteNumber(journey.estimated_co2_kg) !== null
+                    ? "kg"
+                    : undefined
+                }
+              />
+            </Col>
+            <Col xs={12} sm={8} md={6}>
+              <Statistic
                 title={app.t("GPS points")}
                 value={`${stats.gpsCount} / ${stats.totalSamples}`}
               />
@@ -774,6 +791,24 @@ function JourneyDetailDrawer({
   );
 }
 
+const JOURNEY_CSV_COLUMNS = [
+  "id",
+  "vehicle_id",
+  "state",
+  "started_at",
+  "ended_at",
+  "distance_m",
+  "fuel_litres",
+  "fuel_efficiency_l_per_100km",
+  "fuel_efficiency_km_per_l",
+  "estimated_co2_kg",
+  "emission_factor",
+  "driving_events",
+  "last_observed_at",
+  "unknown_seconds",
+  "distance_quality",
+] as const;
+
 export function Journeys({
   vehicleId,
   poll,
@@ -781,9 +816,11 @@ export function Journeys({
   vehicleId?: string;
   poll?: number;
 }) {
+
   const app = useApp(),
     path = orgPath(app.organizationId),
     [selectedJourney, setSelectedJourney] = useState<Row | null>(null),
+    [journeyRows, setJourneyRows] = useState<Row[]>([]),
     [state, setState] = useState<string | undefined>(),
     [vehicle, setVehicle] = useState(vehicleId),
     [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
@@ -820,12 +857,51 @@ export function Journeys({
         `${path}/safety-events`,
         { ...(vehicle ? { vehicle_id: vehicle } : {}), per_page: 100 },
         signal,
-        10,
       ),
     retry: false,
     refetchInterval: (q) => (q.state.error ? false : poll || false),
     refetchIntervalInBackground: false,
   });
+
+  const decorateJourneyRow = useCallback(
+    (r: Row): Row => {
+      const matched = matchSafetyEventsForJourney(r, safetyQ.data?.items ?? []);
+      const parts: string[] = [];
+      const b = matched.filter((e) => e.kind === "harsh_braking").length;
+      const a = matched.filter(
+        (e) =>
+          e.kind === "rapid_acceleration" || e.kind === "harsh_acceleration",
+      ).length;
+      if (b > 0) parts.push(`${b} ${app.t("harsh braking")}`);
+      if (a > 0) parts.push(`${a} ${app.t("harsh acceleration")}`);
+      const lPer100 = finiteNumber(r.fuel_efficiency_l_per_100km);
+      const kmPerL = finiteNumber(r.fuel_efficiency_km_per_l);
+      const fuelEfficiency =
+        lPer100 !== null && kmPerL !== null
+          ? `${lPer100.toFixed(2)} L/100km / ${kmPerL.toFixed(2)} km/L`
+          : text(r.fuel_efficiency) || null;
+      return {
+        ...r,
+        end_reason:
+          r.end_reason === "telemetry_gap" ? "automatic_end" : r.end_reason,
+        fuel_efficiency: fuelEfficiency,
+        driving_events: parts.join(", ") || app.t("None"),
+      };
+    },
+    [app, safetyQ.data],
+  );
+
+  const exportJourneysCsv = useCallback(() => {
+    const csvRows = journeyRows.map(decorateJourneyRow);
+    const csvString = buildCsv(JOURNEY_CSV_COLUMNS, csvRows);
+    const filename = vehicleId
+      ? `vehicle-${vehicleId}-journeys.csv`
+      : "journeys.csv";
+    downloadBlob(
+      new Blob([csvString], { type: "text/csv;charset=utf-8" }),
+      filename,
+    );
+  }, [journeyRows, decorateJourneyRow, vehicleId]);
 
   const journeyRender = useMemo(
     () => ({
@@ -901,12 +977,18 @@ export function Journeys({
       </Space>
       <Directory
         path={`${path}/journeys`}
+        fetchAllPages
         poll={poll}
+        onData={setJourneyRows}
+        toolbarExtra={
+          <Button onClick={exportJourneysCsv} disabled={!journeyRows.length}>
+            {app.t("Export CSV")}
+          </Button>
+        }
         query={{
           ...windowQuery(range),
           vehicle_id: vehicle,
           state,
-          limit: 100,
         }}
         fields={[
           "vehicle_id",
@@ -915,47 +997,14 @@ export function Journeys({
           "ended_at",
           "distance_m",
           "fuel_efficiency",
+          "estimated_co2_kg",
           "driving_events",
           "last_observed_at",
           "unknown_seconds",
           "distance_quality",
         ]}
         render={journeyRender}
-        transformRows={(rows) =>
-          rows.map((r) => {
-            const matched = matchSafetyEventsForJourney(
-              r,
-              safetyQ.data?.items ?? [],
-            );
-            const parts: string[] = [];
-            const b = matched.filter((e) => e.kind === "harsh_braking").length;
-            const a = matched.filter(
-              (e) =>
-                e.kind === "rapid_acceleration" ||
-                e.kind === "harsh_acceleration",
-            ).length;
-            if (b > 0) parts.push(`${b} ${app.t("harsh braking")}`);
-            if (a > 0) parts.push(`${a} ${app.t("harsh acceleration")}`);
-            const lPer100 = finiteNumber(r.fuel_efficiency_l_per_100km);
-            const kmPerL = finiteNumber(r.fuel_efficiency_km_per_l);
-            const fuelEfficiency =
-              lPer100 !== null && kmPerL !== null
-                ? `${lPer100.toFixed(2)} L/100km / ${kmPerL.toFixed(2)} km/L`
-                : text(r.fuel_efficiency) || null;
-            return {
-              ...r,
-              end_reason:
-                r.end_reason === "telemetry_gap"
-                  ? "automatic_end"
-                  : r.end_reason,
-              fuel_efficiency: fuelEfficiency,
-              driving_events: parts.join(", ") || app.t("None"),
-            };
-          })
-        }
-        scope={app.t(
-          "At most 100 journeys in this filter; no cursor endpoint is available.",
-        )}
+        transformRows={(rows) => rows.map(decorateJourneyRow)}
         action={(row) => (
           <Button size="small" onClick={() => setSelectedJourney(row)}>
             {app.t("Inspect journey")}
@@ -2774,6 +2823,8 @@ function DriverEcoCoachCard() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [result, setResult] = useState<Row | null>(null);
+  const [history, setHistory] = useState<Row[]>([]);
+  const [activeGenId, setActiveGenId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -2781,7 +2832,26 @@ function DriverEcoCoachCard() {
     setResult(null);
     setError(null);
     setBusy(false);
+    setHistory([]);
+    setActiveGenId(null);
+    if (!app.organizationId) return;
+    const controller = new AbortController();
+    void api<Row>(orgPath(app.organizationId, "/driver/me/eco-coach-ai"), {
+      method: "POST",
+      body: { history_only: true },
+      readOnlyAction: true,
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!controller.signal.aborted) {
+          setHistory(rows(res.data?.history));
+        }
+      })
+      .catch(() => {
+        // Ignore optional history fetch errors.
+      });
     return () => {
+      controller.abort();
       abortRef.current?.abort();
     };
   }, [app.organizationId]);
@@ -2813,7 +2883,12 @@ function DriverEcoCoachCard() {
         },
       );
       if (!controller.signal.aborted) {
-        setResult(object(res.data));
+        const data = object(res.data);
+        setResult(data);
+        if (Array.isArray(data.history)) {
+          setHistory(rows(data.history));
+        }
+        setActiveGenId(text(data.generation_id) || null);
       }
     } catch (e) {
       if (!controller.signal.aborted) {
@@ -3062,7 +3137,7 @@ function DriverEcoCoachCard() {
                   <GeminiPoweredBadge />
                   <span>
                     {app.t(
-                      "Advisory only — generated by Google Gemini and not stored by CarLink.",
+                      "Advisory only — generated by Google Gemini and archived in CarLink history.",
                     )}
                   </span>
                 </div>
@@ -3071,6 +3146,15 @@ function DriverEcoCoachCard() {
             </div>
           </div>
         )}
+
+        <AiHistoryPanel
+          history={history}
+          activeGenerationId={activeGenId}
+          onSelectResult={(res, entry) => {
+            setResult(res);
+            setActiveGenId(text(entry.id) || null);
+          }}
+        />
       </div>
     </Card>
   );

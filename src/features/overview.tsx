@@ -14,7 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../app/context";
 import { orgPath } from "../api/client";
-import { text, type Row } from "../api/types";
+import { rows, text, type Row } from "../api/types";
 import { CoordinateMap } from "../components/CoordinateMap";
 import {
   Directory,
@@ -255,8 +255,10 @@ export function Overview({ platform = false }: { platform?: boolean }) {
     platform ? 30000 : pollMs,
   );
   const [items, setItems] = useState<Row[]>([]),
-    onData = useCallback((rows: Row[]) => setItems(rows), []);
+    onData = useCallback((rowsList: Row[]) => setItems(rowsList), []);
   const platformSummary = q.data?.data;
+  const dtcEpisodes = rows(q.data?.data?.dtc_episodes);
+  const activeDtcCount = Number(q.data?.data?.active_dtc_episodes ?? 0);
   return (
     <div className="stack">
       <PageTitle
@@ -363,60 +365,210 @@ export function Overview({ platform = false }: { platform?: boolean }) {
             </Col>
           </GridRow>
           {app.can("telemetry.read") && (
-            <div className="stack">
-              <Typography.Title level={4}>
-                {app.t("Fleet vehicle status")}
-              </Typography.Title>
-              <Directory
-                path={`${path}/fleet-states`}
-                query={{ per_page: 100 }}
-                fields={[
-                  "registration_number",
-                  "make",
-                  "model",
-                  "current_driver_name",
-                  "speed_kmh",
-                  "freshness",
-                  "occurred_at",
-                  "has_fault_code",
-                  "dtc_codes",
-                ]}
-                render={{
-                  current_driver_name: (v) =>
-                    text(v) ? (
-                      <Tag color="blue">{text(v)}</Tag>
-                    ) : (
-                      <span className="muted">{app.t("No active driver")}</span>
+            <>
+              <Card
+                title={app.t("Vehicle DTC Fault & Check-Engine Timeline")}
+                extra={
+                  <Tag color={activeDtcCount > 0 ? "error" : "success"}>
+                    {activeDtcCount} {app.t("active")}
+                  </Tag>
+                }
+              >
+                <Table<Row>
+                  size="small"
+                  rowKey={(r) => text(r.id)}
+                  dataSource={dtcEpisodes}
+                  pagination={{ pageSize: 8, hideOnSinglePage: true }}
+                  scroll={{ x: "max-content" }}
+                  locale={{
+                    emptyText: app.t(
+                      "No active or historical DTC fault episodes recorded.",
                     ),
-                  dtc_codes: (v) =>
-                    Array.isArray(v) && v.length > 0 ? (
-                      <Space size={[4, 4]} wrap>
-                        {v.map((c, idx) => (
-                          <Tag color="error" key={idx}>
-                            {text(c)}
-                          </Tag>
-                        ))}
-                      </Space>
-                    ) : (
-                      <span className="muted">—</span>
-                    ),
-                }}
-                poll={pollMs}
-                onData={onData}
-                action={(r) => (
-                  <Button
-                    size="small"
-                    onClick={() =>
-                      navigate(
-                        `/organization/${app.organizationId}/vehicles/${r.id}`,
-                      )
-                    }
-                  >
-                    {app.t("inspect")}
-                  </Button>
-                )}
-              />
-            </div>
+                  }}
+                  columns={[
+                    {
+                      title: app.t("Vehicle"),
+                      key: "vehicle",
+                      render: (_v, r) => (
+                        <Space direction="vertical" size={0}>
+                          <Button
+                            type="link"
+                            size="small"
+                            style={{ padding: 0, height: "auto" }}
+                            onClick={() =>
+                              navigate(
+                                `/organization/${app.organizationId}/vehicles/${text(r.vehicle_id)}`,
+                              )
+                            }
+                          >
+                            {text(r.registration_number) || text(r.vehicle_id)}
+                          </Button>
+                          {(text(r.make) || text(r.model)) && (
+                            <Typography.Text
+                              type="secondary"
+                              style={{ fontSize: 12 }}
+                            >
+                              {[text(r.make), text(r.model)]
+                                .filter(Boolean)
+                                .join(" ")}
+                            </Typography.Text>
+                          )}
+                        </Space>
+                      ),
+                    },
+                    {
+                      title: app.t("DTC code"),
+                      dataIndex: "code",
+                      render: (v: unknown) => (
+                        <Tag color="error">{text(v) || "—"}</Tag>
+                      ),
+                    },
+                    {
+                      title: app.t("Catalog info"),
+                      key: "catalog",
+                      render: (_v, r) => {
+                        const comp = text(r.catalog_component);
+                        const desc = text(r.catalog_description);
+                        if (!comp && !desc) {
+                          return <span className="muted">—</span>;
+                        }
+                        return (
+                          <Space direction="vertical" size={0}>
+                            {comp && <Tag>{comp}</Tag>}
+                            {desc && (
+                              <Typography.Text
+                                type="secondary"
+                                style={{ fontSize: 12, maxWidth: 260 }}
+                                ellipsis={{ tooltip: desc }}
+                              >
+                                {desc}
+                              </Typography.Text>
+                            )}
+                          </Space>
+                        );
+                      },
+                    },
+                    {
+                      title: app.t("status"),
+                      key: "status",
+                      render: (_v, r) => (
+                        <Space size={4} wrap>
+                          {text(r.status) === "active" ? (
+                            <Tag color="error">{app.t("Active (Lit Up)")}</Tag>
+                          ) : (
+                            <Tag color="success">{app.t("Cleared")}</Tag>
+                          )}
+                          {Boolean(r.mil_on) && (
+                            <Tag color="warning">{app.t("MIL On")}</Tag>
+                          )}
+                        </Space>
+                      ),
+                    },
+                    {
+                      title: app.t("Started at"),
+                      dataIndex: "started_at",
+                      render: (v: unknown) => <Time value={v} />,
+                    },
+                    {
+                      title: app.t("Ended at / Till"),
+                      dataIndex: "ended_at",
+                      render: (v: unknown) =>
+                        v ? (
+                          <Time value={v} />
+                        ) : (
+                          <Tag color="volcano">{app.t("Ongoing (Active)")}</Tag>
+                        ),
+                    },
+                    {
+                      title: app.t("Samples"),
+                      dataIndex: "samples_count",
+                      align: "right",
+                      render: (v: unknown) => text(v) || "1",
+                    },
+                    {
+                      title: app.t("Email alert"),
+                      dataIndex: "email_notified_at",
+                      render: (v: unknown) =>
+                        v ? (
+                          <Tag color="processing">{app.t("Email Sent")}</Tag>
+                        ) : (
+                          <span className="muted">—</span>
+                        ),
+                    },
+                    {
+                      title: app.t("actions"),
+                      key: "actions",
+                      render: (_v, r) => (
+                        <Button
+                          size="small"
+                          onClick={() =>
+                            navigate(
+                              `/organization/${app.organizationId}/vehicles/${text(r.vehicle_id)}`,
+                            )
+                          }
+                        >
+                          {app.t("inspect")}
+                        </Button>
+                      ),
+                    },
+                  ]}
+                />
+              </Card>
+              <div className="stack">
+                <Typography.Title level={4}>
+                  {app.t("Fleet vehicle status")}
+                </Typography.Title>
+                <Directory
+                  path={`${path}/fleet-states`}
+                  query={{ per_page: 100 }}
+                  fields={[
+                    "registration_number",
+                    "make",
+                    "model",
+                    "current_driver_name",
+                    "speed_kmh",
+                    "freshness",
+                    "occurred_at",
+                    "has_fault_code",
+                    "dtc_codes",
+                  ]}
+                  render={{
+                    current_driver_name: (v) =>
+                      text(v) ? (
+                        <Tag color="blue">{text(v)}</Tag>
+                      ) : (
+                        <span className="muted">{app.t("No active driver")}</span>
+                      ),
+                    dtc_codes: (v) =>
+                      Array.isArray(v) && v.length > 0 ? (
+                        <Space size={[4, 4]} wrap>
+                          {v.map((c, idx) => (
+                            <Tag color="error" key={idx}>
+                              {text(c)}
+                            </Tag>
+                          ))}
+                        </Space>
+                      ) : (
+                        <span className="muted">—</span>
+                      ),
+                  }}
+                  poll={pollMs}
+                  onData={onData}
+                  action={(r) => (
+                    <Button
+                      size="small"
+                      onClick={() =>
+                        navigate(
+                          `/organization/${app.organizationId}/vehicles/${r.id}`,
+                        )
+                      }
+                    >
+                      {app.t("inspect")}
+                    </Button>
+                  )}
+                />
+              </div>
+            </>
           )}
         </>
       )}
