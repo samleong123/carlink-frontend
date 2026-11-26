@@ -8,6 +8,7 @@ import {
   Select,
   Space,
   Tag,
+  Tooltip,
   Typography,
 } from "antd";
 import { SwapOutlined } from "@ant-design/icons";
@@ -186,9 +187,21 @@ export function AiHistoryPanel({
       <div className="stack" style={{ gap: 10 }}>
         <Space wrap style={{ justifyContent: "space-between", width: "100%" }}>
           <Space wrap>
-            <Typography.Text strong>
-              {app.t("Saved AI Results History")} ({history.length})
-            </Typography.Text>
+            <Space size={6}>
+              <Typography.Text strong>
+                {app.t("Saved AI Results History")} ({history.length})
+              </Typography.Text>
+              <Tooltip
+                styles={{ root: { maxWidth: 360 } }}
+                title={app.t(
+                  "AI History is the chronological log of every individual Gemini AI generation run (including re-analyses). Unlike the DTC Catalog (one cached entry per code) and DTC Episodes (vehicle fault timeline), every run creates a snapshot here for inspection or comparison.",
+                )}
+              >
+                <span tabIndex={0} style={{ cursor: "help", opacity: 0.7 }}>
+                  ⓘ
+                </span>
+              </Tooltip>
+            </Space>
             <Select<string>
               size="small"
               style={{ minWidth: 280, maxWidth: 460 }}

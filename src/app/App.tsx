@@ -69,6 +69,7 @@ import {
 } from "../features/platform";
 import { Maintenance } from "../features/maintenance";
 import { Compliance } from "../features/compliance";
+import { Incidents } from "../features/incidents";
 import { Account, Settings, Staff } from "../features/administration";
 import { Notifications } from "../features/notifications";
 import { Coverage, Logs, Reports } from "../features/analytics";
@@ -249,6 +250,7 @@ function Shell() {
       journeys: <CompassOutlined />,
       safety: <SafetyCertificateOutlined />,
       appeals: <AuditOutlined />,
+      incidents: <AlertOutlined />,
       maintenance: <ToolOutlined />,
       compliance: <FileProtectOutlined />,
       coverage: <WifiOutlined />,
@@ -270,6 +272,7 @@ function Shell() {
       "my/vehicle-info": <CarOutlined />,
       "my/events": <AlertOutlined />,
       "my/appeals": <AuditOutlined />,
+      "my/incidents": <AlertOutlined />,
     };
     return icons[key] || <SafetyCertificateOutlined />;
   };
@@ -635,6 +638,8 @@ function Page({ section, pathname }: { section: string; pathname: string }) {
       return <Safety />;
     case "appeals":
       return <Safety appeals />;
+    case "incidents":
+      return <Incidents />;
     case "maintenance":
       return <Maintenance />;
     case "compliance":

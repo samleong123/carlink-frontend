@@ -10,6 +10,7 @@ import {
   Space,
   Table,
   Tag,
+  Tooltip,
   Typography,
 } from "antd";
 import { api, orgPath, segment } from "../api/client";
@@ -263,7 +264,23 @@ export function Diagnostics({
       </Card>
       {app.can("telemetry.read") && (
         <Card
-          title={app.t("Vehicle DTC Fault Timeline (started_at to ended_at)")}
+          title={
+            <Space size={6} wrap>
+              <span>
+                {app.t("Vehicle DTC Fault Timeline (started_at to ended_at)")}
+              </span>
+              <Tooltip
+                styles={{ root: { maxWidth: 360 } }}
+                title={app.t(
+                  "DTC Episodes track the automatic OBD-II timeline of when this specific vehicle triggered and cleared each fault code. This is separate from the DTC Database (shared code dictionary) and AI History (individual AI run log).",
+                )}
+              >
+                <span tabIndex={0} style={{ cursor: "help", opacity: 0.7 }}>
+                  ⓘ
+                </span>
+              </Tooltip>
+            </Space>
+          }
           extra={
             <Button
               size="small"
@@ -501,6 +518,16 @@ export function Diagnostics({
                 <Space size={8} wrap>
                   <span>{app.t("DTC Database")}</span>
                   <Tag color="blue">{catalog.length}</Tag>
+                  <Tooltip
+                    styles={{ root: { maxWidth: 360 } }}
+                    title={app.t(
+                      "DTC Catalog / Database stores one shared cached explanation per unique fault code (with lookup count and last analyzed time) so repeat lookups do not call Gemini AI again. Distinct from DTC Episodes (vehicle fault timeline) and AI History (individual AI runs).",
+                    )}
+                  >
+                    <span tabIndex={0} style={{ cursor: "help", opacity: 0.7 }}>
+                      ⓘ
+                    </span>
+                  </Tooltip>
                 </Space>
               }
             >
@@ -515,16 +542,60 @@ export function Diagnostics({
                   {catalog.map((entry) => {
                     const c = text(entry.code);
                     const comp = text(entry.component);
+                    const desc = text(entry.description);
+                    const sol = text(entry.possible_solution);
+                    const model = text(entry.model);
                     const hits = Number(entry.lookup_count || 1);
                     return (
-                      <Tag
+                      <Tooltip
                         key={c}
-                        color="geekblue"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => void explain({ code: c })}
+                        styles={{ root: { maxWidth: 380 } }}
+                        title={
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 4,
+                            }}
+                          >
+                            <strong>
+                              {c}
+                              {comp ? ` · ${comp}` : ""}
+                            </strong>
+                            {desc && <span>{desc}</span>}
+                            {sol && (
+                              <span style={{ opacity: 0.9 }}>
+                                {app.t("Possible solution")}: {sol}
+                              </span>
+                            )}
+                            <span style={{ fontSize: 12, opacity: 0.85 }}>
+                              {[
+                                model ? `${app.t("Model")}: ${model}` : null,
+                                `${app.t("Lookups")}: ${hits}`,
+                              ]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+                            {entry.last_analyzed_at ? (
+                              <span style={{ fontSize: 12, opacity: 0.85 }}>
+                                {app.t("Last analyzed")}:{" "}
+                                <Time value={entry.last_analyzed_at} />
+                              </span>
+                            ) : null}
+                            <span style={{ fontSize: 11, opacity: 0.75 }}>
+                              {app.t("Click to view full explanation")}
+                            </span>
+                          </div>
+                        }
                       >
-                        {c} · {comp} · {hits}×
-                      </Tag>
+                        <Tag
+                          color="geekblue"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => void explain({ code: c })}
+                        >
+                          {c} · {comp} · {hits}×
+                        </Tag>
+                      </Tooltip>
                     );
                   })}
                 </Space>

@@ -44,6 +44,9 @@ export function navigation(
             "energy",
             "vehicle-info",
             ...(features.safety ? ["events", "appeals"] : []),
+            ...(permissions.includes("incidents.report_own")
+              ? ["incidents"]
+              : []),
           ].map((key) => ({
             key: `my/${key}`,
             label:
@@ -51,7 +54,9 @@ export function navigation(
                 ? "vehicleInfo"
                 : key === "appeals"
                   ? "myAppeals"
-                  : key,
+                  : key === "incidents"
+                    ? "myIncidents"
+                    : key,
             path: `${prefix}/my/${key}`,
           })),
           {
@@ -70,6 +75,7 @@ export function navigation(
     ["journeys", "journeys", "journeys.read"],
     ["safety", "safety", "safety.read", "safety"],
     ["appeals", "appeals", "safety.appeals.decide", "safety"],
+    ["incidents", "incidents", "incidents.read"],
     ["maintenance", "maintenance", "maintenance.read"],
     ["compliance", "compliance", "compliance.read"],
     ["coverage", "coverage", "coverage.read", "cellular"],

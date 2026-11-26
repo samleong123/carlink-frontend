@@ -10,6 +10,7 @@ import {
   Alert,
   Button,
   Card,
+  Collapse,
   Descriptions,
   Empty,
   Input,
@@ -559,6 +560,241 @@ export function Value({
   }
   return <span className={className}>{raw}</span>;
 }
+type DiagnosticCollectionKey = "dtc_episodes" | "dtc_catalog" | "ai_history";
+
+function isDiagnosticCollectionKey(key: string): key is DiagnosticCollectionKey {
+  return (
+    key === "dtc_episodes" || key === "dtc_catalog" || key === "ai_history"
+  );
+}
+
+/**
+ * Normalizes a diagnostic collection record into badge metadata, tooltip content,
+ * and cleaned detail fields so nested vehicle/user UUIDs do not clutter the UI.
+ */
+function buildDiagnosticEntryView(
+  fieldKey: DiagnosticCollectionKey,
+  row: Row,
+  ct: (key: string) => string,
+  t: (key: string) => string,
+): {
+  tagLabel: string;
+  tagColor: string;
+  cardTitle: string;
+  tooltip: ReactNode;
+  detailData: Row;
+  extraSolution?: string;
+} {
+  if (fieldKey === "dtc_catalog") {
+    const code = text(row.code) || "—";
+    const comp = text(row.component);
+    const desc = text(row.description);
+    const sol = text(row.possible_solution);
+    const model = text(row.model);
+    const hits = Number(row.lookup_count || 1);
+    const header = [code, comp].filter(Boolean).join(" · ");
+    return {
+      tagLabel: [code, comp, `${hits}×`].filter(Boolean).join(" · "),
+      tagColor: "geekblue",
+      cardTitle: header,
+      extraSolution: sol || undefined,
+      tooltip: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <strong>{header}</strong>
+          {desc && <span>{desc}</span>}
+          {sol && (
+            <span style={{ opacity: 0.9 }}>
+              {t("Possible solution")}: {sol}
+            </span>
+          )}
+          <span style={{ fontSize: 12, opacity: 0.85 }}>
+            {[
+              model ? `${t("Model")}: ${model}` : null,
+              `${t("Lookups")}: ${hits}`,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </span>
+          {row.last_analyzed_at ? (
+            <span style={{ fontSize: 12, opacity: 0.85 }}>
+              {t("Last analyzed")}: <Time value={row.last_analyzed_at} />
+            </span>
+          ) : null}
+        </div>
+      ),
+      detailData: {
+        code: row.code,
+        component: row.component,
+        description: row.description,
+        model: row.model,
+        source: row.source,
+        lookup_count: row.lookup_count,
+        first_analyzed_at: row.first_analyzed_at,
+        last_analyzed_at: row.last_analyzed_at,
+      },
+    };
+  }
+
+  if (fieldKey === "dtc_episodes") {
+    const code = text(row.code) || "—";
+    const status = text(row.status) || "unknown";
+    const isActive = status === "active";
+    const statusLabel = isActive ? t("Active") : ct(status);
+    const milLabel = row.mil_on ? t("MIL ON") : t("MIL OFF");
+    const desc = text(row.catalog_description);
+    const header = `${code} · ${statusLabel}`;
+    return {
+      tagLabel: header,
+      tagColor: isActive ? "error" : "success",
+      cardTitle: row.catalog_component
+        ? `${header} (${text(row.catalog_component)})`
+        : header,
+      extraSolution: text(row.catalog_possible_solution) || undefined,
+      tooltip: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <strong>
+            {header} · {milLabel}
+          </strong>
+          {desc && <span>{desc}</span>}
+          <span style={{ fontSize: 12, opacity: 0.85 }}>
+            {t("Started")}: <Time value={row.started_at} />
+          </span>
+          <span style={{ fontSize: 12, opacity: 0.85 }}>
+            {t("Ended")}:{" "}
+            {row.ended_at ? <Time value={row.ended_at} /> : t("Ongoing")}
+          </span>
+          <span style={{ fontSize: 12, opacity: 0.85 }}>
+            {[
+              row.samples_count !== undefined
+                ? `${t("Samples")}: ${text(row.samples_count)}`
+                : null,
+              row.email_notified_at ? t("Email Sent") : t("No alert email"),
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </span>
+        </div>
+      ),
+      detailData: {
+        code: row.code,
+        status: row.status,
+        mil_on: row.mil_on,
+        started_at: row.started_at,
+        last_observed_at: row.last_observed_at,
+        ended_at: row.ended_at ?? t("Ongoing"),
+        samples_count: row.samples_count,
+        email_notified_at: row.email_notified_at,
+        catalog_component: row.catalog_component,
+        catalog_description: row.catalog_description,
+      },
+    };
+  }
+
+  const res = object(row.result);
+  const targetKey = text(row.target_key) || text(res.code);
+  const title = text(row.title);
+  const model = text(row.model);
+  const desc = text(res.description) || text(res.executive_summary);
+  const sol = text(res.possible_solution);
+  const heading = title || targetKey || "AI";
+  return {
+    tagLabel: [heading, model].filter(Boolean).join(" · "),
+    tagColor: "purple",
+    cardTitle: [heading, model].filter(Boolean).join(" · "),
+    extraSolution: sol || undefined,
+    tooltip: (
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <strong>{heading}</strong>
+        {desc && <span>{desc}</span>}
+        <span style={{ fontSize: 12, opacity: 0.85 }}>
+          {model ? `${t("Model")}: ${model} · ` : ""}
+          <Time value={row.created_at} />
+        </span>
+      </div>
+    ),
+    detailData: {
+      code: res.code ?? row.target_key,
+      component: res.component,
+      description: desc || undefined,
+      model: row.model,
+      created_at: row.created_at,
+    },
+  };
+}
+
+/**
+ * Renders DTC diagnostic arrays (`dtc_episodes`, `dtc_catalog`, `ai_history`)
+ * as compact hoverable badges with a collapsed-by-default expandable detail drawer.
+ */
+function DiagnosticCollectionCell({
+  fieldKey,
+  items,
+}: {
+  fieldKey: DiagnosticCollectionKey;
+  items: unknown[];
+}) {
+  const { locale, t } = useApp();
+  const ct = (key: string) => coreText(locale, key, t);
+  if (items.length === 0) {
+    return <span className="muted">{ct("None")}</span>;
+  }
+
+  const entries = items.map((item) =>
+    buildDiagnosticEntryView(fieldKey, object(item), ct, t),
+  );
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <Space size={[6, 6]} wrap>
+        <Tag color="blue">{entries.length}</Tag>
+        {entries.map((entry, idx) => (
+          <Tooltip
+            key={idx}
+            styles={{ root: { maxWidth: 380 } }}
+            title={entry.tooltip}
+          >
+            <Tag color={entry.tagColor} style={{ cursor: "help" }}>
+              {entry.tagLabel}
+            </Tag>
+          </Tooltip>
+        ))}
+      </Space>
+      <Collapse
+        size="small"
+        ghost
+        items={[
+          {
+            key: "details",
+            label: `${t("Show details")} (${entries.length})`,
+            children: (
+              <Space
+                orientation="vertical"
+                size={8}
+                style={{ width: "100%" }}
+              >
+                {entries.map((entry, idx) => (
+                  <Card key={idx} size="small" title={entry.cardTitle}>
+                    <Details data={entry.detailData} compact />
+                    {entry.extraSolution && (
+                      <Typography.Paragraph
+                        type="secondary"
+                        style={{ marginTop: 8, marginBottom: 0, fontSize: 12 }}
+                      >
+                        <strong>{t("Possible solution")}:</strong>{" "}
+                        {entry.extraSolution}
+                      </Typography.Paragraph>
+                    )}
+                  </Card>
+                ))}
+              </Space>
+            ),
+          },
+        ]}
+      />
+    </div>
+  );
+}
+
 export function Details({
   data,
   compact = false,
@@ -572,6 +808,14 @@ export function Details({
     return (
       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={ct("empty")} />
     );
+  const catalogByCode = new Map<string, Row>();
+  if (Array.isArray(data.dtc_catalog)) {
+    for (const rawEntry of data.dtc_catalog) {
+      const entry = object(rawEntry);
+      const codeKey = text(entry.code).toUpperCase();
+      if (codeKey) catalogByCode.set(codeKey, entry);
+    }
+  }
   return (
     <Descriptions
       size="small"
@@ -586,8 +830,13 @@ export function Details({
             Boolean(help) || translated !== key || /[_A-Z]/.test(key);
           return {
             key,
+            span:
+              !compact && isDiagnosticCollectionKey(key)
+                ? { xs: 1, sm: 1, md: 2 }
+                : undefined,
             label: showTooltip ? (
               <Tooltip
+                styles={{ root: { maxWidth: 380 } }}
                 title={help?.description || `${ct("Original field")}: ${key}`}
               >
                 <span tabIndex={0}>
@@ -602,36 +851,72 @@ export function Details({
               key === "dtc_codes" && Array.isArray(value) ? (
                 value.length > 0 ? (
                   <Space size={[4, 4]} wrap>
-                    {value.map((code, i) => (
-                      <Tag color="error" key={i}>
-                        {text(code)}
-                      </Tag>
-                    ))}
+                    {value.map((code, i) => {
+                      const codeText = text(code);
+                      const catalogMatch = catalogByCode.get(
+                        codeText.toUpperCase(),
+                      );
+                      const tag = (
+                        <Tag color="error" key={i}>
+                          {codeText}
+                        </Tag>
+                      );
+                      if (!catalogMatch) return tag;
+                      const comp = text(catalogMatch.component);
+                      const desc = text(catalogMatch.description);
+                      return (
+                        <Tooltip
+                          key={i}
+                          styles={{ root: { maxWidth: 360 } }}
+                          title={
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 2,
+                              }}
+                            >
+                              <strong>
+                                {codeText}
+                                {comp ? ` · ${comp}` : ""}
+                              </strong>
+                              {desc && <span>{desc}</span>}
+                            </div>
+                          }
+                        >
+                          {tag}
+                        </Tooltip>
+                      );
+                    })}
                   </Space>
                 ) : (
                   <span className="muted">{ct("None")}</span>
                 )
+              ) : isDiagnosticCollectionKey(key) && Array.isArray(value) ? (
+                <DiagnosticCollectionCell fieldKey={key} items={value} />
               ) : Array.isArray(value) ? (
-              <Space orientation="vertical">
-                {value.map((v, i) => (
-                  <div key={i}>
-                    {typeof v === "object" && v !== null ? (
-                      <Details data={object(v)} compact />
-                    ) : (
-                      <Value value={v} />
-                    )}
-                  </div>
-                ))}
-              </Space>
-            ) : (
-              <Value
-                value={value}
-                field={key}
-                currency={
-                  typeof data.currency === "string" ? data.currency : undefined
-                }
-              />
-            ),
+                <Space orientation="vertical">
+                  {value.map((v, i) => (
+                    <div key={i}>
+                      {typeof v === "object" && v !== null ? (
+                        <Details data={object(v)} compact />
+                      ) : (
+                        <Value value={v} />
+                      )}
+                    </div>
+                  ))}
+                </Space>
+              ) : (
+                <Value
+                  value={value}
+                  field={key}
+                  currency={
+                    typeof data.currency === "string"
+                      ? data.currency
+                      : undefined
+                  }
+                />
+              ),
           };
         })}
     />

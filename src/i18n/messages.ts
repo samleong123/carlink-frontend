@@ -2,6 +2,7 @@ import { CORE_PHRASES } from "./corePhrases";
 import { DOMAIN_AND_PUBLIC_PHRASES } from "./domainAndPublicPhrases";
 import { FLEET_PHRASES } from "./fleetPhrases";
 import { LANDING_EDITORIAL_PHRASES } from "./landingEditorialPhrases";
+import { INCIDENT_PHRASES } from "./incidentPhrases";
 import {
   TECHNICAL_FIELD_LABELS,
   TECHNICAL_VALUE_LABELS,
@@ -498,6 +499,7 @@ function mergeLocale(locale: Locale): Record<string, string> {
     ...DOMAIN_AND_PUBLIC_PHRASES[locale],
     ...LANDING_EDITORIAL_PHRASES[locale],
     ...FLEET_PHRASES[locale],
+    ...INCIDENT_PHRASES[locale],
     ...CORE_PHRASES[locale],
     ...TECHNICAL_FIELD_LABELS[locale],
     ...valEntries,

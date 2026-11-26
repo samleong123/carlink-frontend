@@ -338,7 +338,13 @@ export function Overview({ platform = false }: { platform?: boolean }) {
               <Card title={app.t("Operational context")}>
                 <div className="stack">
                   <GridRow gutter={[12, 12]}>
-                    {["open_alerts", "pending_telemetry"].map((key) => (
+                    {[
+                      "open_alerts",
+                      "pending_telemetry",
+                      ...(app.can("incidents.read")
+                        ? ["open_incidents", "critical_open_incidents"]
+                        : []),
+                    ].map((key) => (
                       <Col xs={12} key={key}>
                         <Card size="small">
                           <Statistic
@@ -349,11 +355,29 @@ export function Overview({ platform = false }: { platform?: boolean }) {
                                 ? "—"
                                 : text(q.data?.data?.[key])
                             }
+                            valueStyle={
+                              key === "critical_open_incidents" &&
+                              Number(q.data?.data?.[key] ?? 0) > 0
+                                ? { color: "#cf1322" }
+                                : undefined
+                            }
                           />
                         </Card>
                       </Col>
                     ))}
                   </GridRow>
+                  {app.can("incidents.read") && (
+                    <Button
+                      block
+                      onClick={() =>
+                        navigate(
+                          `/organization/${app.organizationId}/incidents`,
+                        )
+                      }
+                    >
+                      {app.t("inc_open_console")}
+                    </Button>
+                  )}
 
                   <Typography.Text type="secondary">
                     {app.t(

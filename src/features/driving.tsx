@@ -61,6 +61,7 @@ import {
 } from "../components/workflow";
 import { driverFields } from "./registry";
 import { Files } from "./files";
+import { MyIncidents } from "./incidents";
 
 function SafetyScoreCard({
   path,
@@ -3191,6 +3192,7 @@ export function DriverPortal({ page }: { page: string }) {
     );
   if (page === "records") return <DriverRecords path={path} />;
   if (page === "trips") return <DriverTrips path={path} />;
+  if (page === "incidents") return <MyIncidents />;
   return (
     <div className="stack">
       <PageTitle

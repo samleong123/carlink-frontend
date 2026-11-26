@@ -96,7 +96,13 @@ export function Files({
     cache = useQueryClient(),
     path = orgPath(app.organizationId, "/files");
   const [file, setFile] = useState<File | null>(null),
-    [purpose, setPurpose] = useState(photoWrapper ? "photo" : "document"),
+    [purpose, setPurpose] = useState(
+      photoWrapper
+        ? "photo"
+        : targetType === "incident"
+          ? "incident_evidence"
+          : "document",
+    ),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(null),
     [notice, setNotice] = useState(""),
@@ -141,9 +147,11 @@ export function Files({
         ? ["mileage_evidence", "document"]
         : targetType === "maintenance_order"
           ? ["maintenance_evidence", "document"]
-          : ["organization", "driver"].includes(targetType)
-            ? ["document", "photo"]
-            : ["document"];
+          : targetType === "incident"
+            ? ["incident_evidence", "photo", "document"]
+            : ["organization", "driver"].includes(targetType)
+              ? ["document", "photo"]
+              : ["document"];
   const upload = async () => {
     if (!file || submitting.current || uploadUncertain) return;
     submitting.current = true;

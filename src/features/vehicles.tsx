@@ -50,6 +50,7 @@ import { Diagnostics } from "./diagnostics";
 import { Files } from "./files";
 import { VehicleMaintenance } from "./maintenance";
 import { Compliance } from "./compliance";
+import { Incidents } from "./incidents";
 import { Journeys } from "./driving";
 import { convertMileageInputsToMetres } from "../lib/mileageUnits";
 
@@ -1794,6 +1795,15 @@ export function VehicleDetail({ id }: { id: string }) {
             key: "compliance",
             label: app.t("Compliance"),
             children: <Compliance vehicleId={id} poll={pollMs} />,
+          },
+        ]
+      : []),
+    ...(app.can("incidents.read")
+      ? [
+          {
+            key: "incidents",
+            label: app.t("incidents"),
+            children: <Incidents vehicleId={id} />,
           },
         ]
       : []),

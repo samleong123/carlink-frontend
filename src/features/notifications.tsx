@@ -21,6 +21,8 @@ export function notificationRoute(action: unknown, org: string): string | null {
   if (a.route === "billing") return `/organization/${segment(org)}/billing`;
   if (a.route === "safety_appeals")
     return `/organization/${segment(org)}/appeals`;
+  if (a.route === "incidents")
+    return `/organization/${segment(org)}/incidents`;
   return null;
 }
 export function Notifications() {

@@ -50,6 +50,48 @@ const FIELD_TERMS: Record<string, TermEntry> = {
       ta: "வாகனத்தின் உள்ளகக் கண்டறிதல் அமைப்பு ஒன்று அல்லது அதற்கு மேற்பட்ட பிழைக் குறியீடுகளைப் பதிவு செய்துள்ளதா என்பதைக் காட்டுகிறது.",
     },
   },
+  dtc_episodes: {
+    label: {
+      en: "DTC Episodes",
+      ms: "Episod DTC",
+      zh: "DTC 故障事件记录",
+      ta: "DTC பிழை நிகழ்வுகள்",
+    },
+    description: {
+      en: "Automatic OBD-II telemetry timeline recording when this specific vehicle triggered and cleared each fault code (start/end time, MIL light, alert email). Unlike DTC Catalog (shared code dictionary) and AI History (AI run log).",
+      ms: "Garis masa telemetri OBD-II automatik yang merekodkan bila kenderaan ini mencetuskan dan mengosongkan setiap kod kerosakan (masa mula/tamat, lampu MIL, e-mel amaran). Berbeza daripada Katalog DTC (kamus kod dikongsi) dan Sejarah AI (log larian AI).",
+      zh: "自动化的 OBD-II 遥测时间线，记录该特定车辆何时触发并清除各故障码（开始/结束时间、MIL 故障灯状态及邮件提醒）。不同于 DTC 故障码知识库（共享字典）和 AI 分析历史（单次分析记录）。",
+      ta: "இந்த குறிப்பிட்ட வாகனம் ஒவ்வொரு பிழைக் குறியீட்டையும் எப்போது இயக்கியது மற்றும் நீக்கியது என்பதைப் பதிவு செய்யும் தானியங்கி OBD-II காலவரிசை (தொடக்க/முடிவு நேரம், MIL விளக்கு, மின்னஞ்சல் எச்சரிக்கை). இது DTC பட்டியல் மற்றும் AI வரலாற்றிலிருந்து வேறுபட்டது.",
+    },
+  },
+  dtc_catalog: {
+    label: {
+      en: "DTC Catalog",
+      ms: "Katalog DTC",
+      zh: "DTC 故障码知识库",
+      ta: "DTC குறியீடு பட்டியல்",
+    },
+    description: {
+      en: "Shared persistent dictionary of unique DTC codes previously searched or analyzed (one cached entry per code with component, description, lookup count, and last analyzed time) so repeat lookups avoid calling Gemini AI again.",
+      ms: "Kamus kekal berkongsi bagi kod DTC unik yang pernah dicari atau dianalisis (satu entri cache bagi setiap kod berserta komponen, penerangan, bilangan carian, dan masa analisis terakhir) supaya carian berulang tidak perlu memanggil Gemini AI semula.",
+      zh: "曾被查询或分析过的唯一故障码共享持久化字典（每个代码保留一条缓存记录，含部件、说明、查询次数和最后分析时间），重复查询时无需再次调用 Gemini AI。",
+      ta: "முன்பு தேடப்பட்ட அல்லது பகுப்பாய்வு செய்யப்பட்ட தனித்துவமான DTC குறியீடுகளின் பகிரப்பட்ட அகராதி (ஒரு குறியீட்டிற்கு ஒரு சேமிக்கப்பட்ட பதிவு: கூறு, விளக்கம், தேடல் எண்ணிக்கை, கடைசி பகுப்பாய்வு நேரம்); மீண்டும் தேடும்போது Gemini AI-ஐ மீண்டும் அழைக்காமல் தவிர்க்கும்.",
+    },
+  },
+  ai_history: {
+    label: {
+      en: "AI History",
+      ms: "Sejarah AI",
+      zh: "AI 分析历史",
+      ta: "AI பகுப்பாய்வு வரலாறு",
+    },
+    description: {
+      en: "Chronological audit log of every individual Gemini AI explanation or re-analysis run; each run saves a separate timestamped snapshot you can inspect or compare side by side.",
+      ms: "Log audit kronologi bagi setiap larian penjanaan atau analisis semula Gemini AI; setiap larian menyimpan syot kilat bertanda masa berasingan untuk semakan atau perbandingan bersebelahan.",
+      zh: "按时间顺序记录每一次 Gemini AI 解析或重新分析的审计日志；每次运行都会保存独立的带时间戳快照，便于查看和并排对比。",
+      ta: "ஒவ்வொரு தனிப்பட்ட Gemini AI விளக்கம் அல்லது மறுபகுப்பாய்வு இயக்கத்தின் காலவரிசைப் பதிவு; ஒவ்வொரு இயக்கமும் ஆய்வு மற்றும் ஒப்பீட்டிற்காகத் தனி நேர முத்திரையிடப்பட்ட பதிவைச் சேமிக்கும்.",
+    },
+  },
   calculated_fuel_consumption: {
     label: {
       en: "Calculated Fuel Consumption",

@@ -362,7 +362,7 @@ const EN = {
     "Generic envelopes need domain response adapters. Legacy managed-device mutations are excluded.",
   dep_b13_feature: "Roadmap APIs",
   dep_b13_handling:
-    "Street tiles, incidents, durable report jobs, emissions, route comparison and governance are not implemented.",
+    "Street tiles, durable report jobs, emissions, route comparison and governance are not implemented.",
   dep_b14_feature: "Prototype privacy",
   dep_b14_handling:
     "Private Windows prototype recordings and configuration are not bundled. Edge privacy needs independent review.",
@@ -1482,7 +1482,7 @@ const MS: Record<DomainKey, string> = {
     "Sampul generik memerlukan penyesuai respons domain. Mutasi peranti terurus warisan dikecualikan.",
   dep_b13_feature: "API peta jalan",
   dep_b13_handling:
-    "Jubin jalan, insiden, tugas laporan tahan lama, pelepasan, perbandingan laluan dan tadbir urus belum dilaksanakan.",
+    "Jubin jalan, tugas laporan tahan lama, pelepasan, perbandingan laluan dan tadbir urus belum dilaksanakan.",
   dep_b14_feature: "Privasi prototaip",
   dep_b14_handling:
     "Rakaman dan konfigurasi prototaip Windows peribadi tidak disertakan. Privasi pinggir memerlukan semakan bebas.",
@@ -2575,7 +2575,7 @@ const ZH: Record<DomainKey, string> = {
   dep_b12_handling: "通用响应包装需领域适配器。已排除旧版受管设备变更接口。",
   dep_b13_feature: "路线图接口",
   dep_b13_handling:
-    "街道瓦片、事件上报、持久报表任务、排放、路线对比与治理接口尚未实现。",
+    "街道瓦片、持久报表任务、排放、路线对比与治理接口尚未实现。",
   dep_b14_feature: "原型隐私审查",
   dep_b14_handling: "未打包 Windows 私有原型录像与配置。边缘端隐私需独立审查。",
   dep_b15_feature: "待审续期发现",
@@ -3631,7 +3631,7 @@ const TA: Record<DomainKey, string> = {
     "பொது உறைகளுக்குத் துறைசார் பதில் ஏற்பிகள் தேவை. பழைய நிர்வகிக்கப்பட்ட-சாதன மாற்றங்கள் விலக்கப்பட்டுள்ளன.",
   dep_b13_feature: "வழித்தட API-கள்",
   dep_b13_handling:
-    "தெரு ஓடுகள், நிகழ்வுகள், நீடித்த அறிக்கை பணிகள், உமிழ்வுகள், பாதை ஒப்பீடு மற்றும் ஆளுமை இன்னும் செயல்படுத்தப்படவில்லை.",
+    "தெரு ஓடுகள், நீடித்த அறிக்கை பணிகள், உமிழ்வுகள், பாதை ஒப்பீடு மற்றும் ஆளுமை இன்னும் செயல்படுத்தப்படவில்லை.",
   dep_b14_feature: "முன்மாதிரி தனியுரிமை",
   dep_b14_handling:
     "தனிப்பட்ட Windows முன்மாதிரிப் பதிவுகளும் கட்டமைப்பும் தொகுக்கப்படவில்லை. எட்ஜ் தனியுரிமைக்குத் தனிப்பட்ட மதிப்பாய்வு தேவை.",

@@ -65,7 +65,7 @@ export const dependencies = [
   [
     "B13",
     "Roadmap APIs",
-    "Street tiles, incidents, durable report jobs, emissions, route comparison and governance are not implemented.",
+    "Street tiles, durable report jobs, emissions, route comparison and governance are not implemented.",
   ],
   [
     "B14",
